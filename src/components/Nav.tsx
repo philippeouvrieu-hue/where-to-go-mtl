@@ -5,13 +5,16 @@ import { useAuth } from "@/contexts/AuthContext";
 export const TopBar = () => {
   const { user, isAdmin, signOut } = useAuth();
   return (
-    <header className="sticky top-0 z-40 backdrop-blur-xl bg-background/70 border-b border-border" style={{ paddingTop: "env(safe-area-inset-top)" }}>
-      <div className="container flex items-center justify-between h-16">
-        <Link to="/" className="flex items-center gap-2 group">
-          <div className="h-8 w-8 rounded-md bg-gradient-primary shadow-glow animate-pulse-glow" />
+    <header
+      className="sticky top-0 z-40 backdrop-blur-xl border-b"
+      style={{ background: "rgba(8,8,16,0.85)", borderColor: "#1e1e2e", paddingTop: "env(safe-area-inset-top)" }}
+    >
+      <div className="container flex items-center justify-between h-14">
+        <Link to="/" className="flex items-center gap-2.5 group">
+          <div className="h-7 w-7 rounded-lg flex-shrink-0" style={{ background: "linear-gradient(135deg, #f0146b, #7c3aed)" }} />
           <div className="leading-none">
-            <div className="font-display font-bold tracking-tight text-base">WHERE TO GO</div>
-            <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Montréal</div>
+            <div className="font-display font-black tracking-tighter text-sm text-white">WHERE TO GO</div>
+            <div className="text-[9px] uppercase tracking-[0.3em] text-white/30">Montréal</div>
           </div>
         </Link>
         <nav className="hidden md:flex items-center gap-1 text-sm">
@@ -22,11 +25,12 @@ export const TopBar = () => {
         </nav>
         <div className="flex items-center gap-2">
           {user ? (
-            <button onClick={signOut} className="text-xs text-muted-foreground hover:text-foreground transition px-3 py-2">
+            <button onClick={signOut} className="text-xs text-white/40 hover:text-white transition px-3 py-2">
               Déconnexion
             </button>
           ) : (
-            <Link to="/auth" className="text-xs font-medium px-4 py-2 rounded-md bg-primary/10 text-primary-glow border border-primary/30 hover:bg-primary/20 transition">
+            <Link to="/auth" className="text-xs font-semibold px-4 py-2 rounded-full text-white transition"
+              style={{ background: "rgba(240,20,107,0.15)", border: "1px solid rgba(240,20,107,0.3)", color: "#f0146b" }}>
               Connexion
             </Link>
           )}
@@ -38,7 +42,7 @@ export const TopBar = () => {
 
 const NavItem = ({ to, label }: { to: string; label: string }) => (
   <NavLink to={to} end className={({ isActive }) =>
-    `px-3 py-2 rounded-md transition ${isActive ? "text-primary-glow" : "text-muted-foreground hover:text-foreground"}`
+    `px-3 py-2 rounded-md text-sm transition ${isActive ? "text-white font-semibold" : "text-white/40 hover:text-white"}`
   }>{label}</NavLink>
 );
 
@@ -52,12 +56,18 @@ export const BottomNav = () => {
     ...(isAdmin ? [{ to: "/admin", icon: Shield, label: "Admin" }] : []),
   ];
   return (
-    <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-background/90 backdrop-blur-xl border-t border-border" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+    <nav
+      className="md:hidden fixed bottom-0 inset-x-0 z-40 backdrop-blur-xl border-t"
+      style={{ background: "rgba(8,8,16,0.92)", borderColor: "#1e1e2e", paddingBottom: "env(safe-area-inset-bottom)" }}
+    >
       <div className="grid grid-cols-4 max-w-md mx-auto">
         {items.map(({ to, icon: Icon, label }) => {
           const active = loc.pathname === to || (to !== "/" && loc.pathname.startsWith(to));
           return (
-            <Link key={to} to={to} className={`flex flex-col items-center gap-1 py-3 text-[10px] uppercase tracking-wider ${active ? "text-primary-glow" : "text-muted-foreground"}`}>
+            <Link key={to} to={to}
+              className="flex flex-col items-center gap-1 py-3 text-[10px] uppercase tracking-wider transition-colors"
+              style={{ color: active ? "#f0146b" : "rgba(255,255,255,0.3)" }}
+            >
               <Icon className="h-5 w-5" />{label}
             </Link>
           );

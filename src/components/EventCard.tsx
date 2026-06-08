@@ -1,134 +1,159 @@
-import { EventRow, formatDate, formatPrice, display, N_I } from "@/lib/events";
+import { EventRow, formatDate, formatPrice, display, N_I, styleColor } from "@/lib/events";
 import { Link } from "react-router-dom";
-import { MapPin, Clock, Flame } from "lucide-react";
+import { MapPin, Clock } from "lucide-react";
 
-const statusBadge = (s: string) => {
-  switch (s) {
-    case "sold out": return "bg-destructive/20 text-destructive border-destructive/40";
-    case "annulé": return "bg-muted text-muted-foreground border-border line-through";
-    case "à vérifier": return "bg-warning/20 text-warning border-warning/40";
-    case "terminé": return "bg-muted text-muted-foreground border-border";
-    default: return "bg-success/15 text-success border-success/30";
-  }
-};
+/* ── Carte horizontale scroll (Ce soir) ── */
+export const EventCardScroll = ({ e }: { e: EventRow }) => {
+  const color = styleColor(e.main_style);
+  return (
+    <Link
+      to={`/event/${e.id}`}
+      className="group flex-shrink-0 w-[200px] rounded-2xl overflow-hidden transition-transform duration-200 hover:-translate-y-0.5"
+      style={{ background: "#13131f", border: "1px solid #1e1e2e" }}
+    >
+      {/* Color accent bar */}
+      <div className="h-1 w-full" style={{ background: color }} />
 
-export const EventCard = ({ e, variant = "default" }: { e: EventRow; variant?: "default" | "compact" }) => {
-  const artists = (e.artists ?? []).slice(0, 3);
-  const isHot = (e.popularity_score ?? 0) >= 80;
+      <div className="p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] uppercase tracking-widest font-semibold" style={{ color }}>
+            {e.main_style ?? N_I}
+          </span>
+          {e.is_free
+            ? <span className="text-[10px] font-bold text-emerald-400">Gratuit</span>
+            : <span className="text-[10px] font-semibold text-white/60">{formatPrice(e)}</span>
+          }
+        </div>
 
-  if (variant === "compact") {
-    return (
-      <Link
-        to={`/event/${e.id}`}
-        className="group flex gap-3 p-3 rounded-xl bg-gradient-card border border-border hover:border-primary/50 transition-all duration-200 shadow-card hover:shadow-glow"
-      >
-        <div className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-muted">
-          {e.image_url ? (
-            <img src={e.image_url} alt={e.event_name} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
-          ) : (
-            <div className="h-full w-full bg-gradient-primary opacity-40" />
+        <h3 className="font-display font-bold text-base leading-tight text-white line-clamp-2 group-hover:opacity-80 transition-opacity">
+          {e.event_name}
+        </h3>
+
+        <div className="space-y-1">
+          <div className="flex items-center gap-1.5 text-[11px] text-white/50">
+            <MapPin className="h-3 w-3 flex-shrink-0" />
+            <span className="truncate">{display(e.venue_name)}</span>
+          </div>
+          {e.start_time && (
+            <div className="flex items-center gap-1.5 text-[11px] text-white/50">
+              <Clock className="h-3 w-3 flex-shrink-0" />
+              <span>{e.start_time.slice(0, 5)}{e.end_time ? ` → ${e.end_time.slice(0, 5)}` : ""}</span>
+            </div>
           )}
         </div>
-        <div className="flex-1 min-w-0 space-y-1 py-0.5">
-          <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-primary-glow font-medium">
-            {e.main_style ?? N_I}
-            {isHot && <Flame className="h-3 w-3 text-warning" />}
-          </div>
-          <h3 className="font-display text-sm font-semibold leading-tight line-clamp-2 group-hover:text-primary-glow transition-colors">
-            {e.event_name}
-          </h3>
-          <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
-            <span className="inline-flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{display(e.venue_name)}</span>
-            {e.start_time && <><span>·</span><span className="inline-flex items-center gap-0.5"><Clock className="h-2.5 w-2.5" />{e.start_time.slice(0,5)}</span></>}
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] text-muted-foreground">{formatDate(e.event_date)}</span>
-            <span className="font-display font-semibold text-xs">{formatPrice(e)}</span>
-          </div>
+
+        <div
+          className="inline-flex items-center gap-1 text-[11px] font-semibold px-3 py-1.5 rounded-full transition-opacity group-hover:opacity-80"
+          style={{ background: `${color}22`, color }}
+        >
+          Voir →
         </div>
-      </Link>
-    );
-  }
+      </div>
+    </Link>
+  );
+};
+
+/* ── Ligne liste (Cette semaine / sections) ── */
+export const EventCardRow = ({ e }: { e: EventRow }) => {
+  const color = styleColor(e.main_style);
+  return (
+    <Link
+      to={`/event/${e.id}`}
+      className="group flex items-center gap-4 px-4 py-3.5 rounded-xl transition-colors duration-150"
+      style={{ background: "#13131f", border: "1px solid #1e1e2e" }}
+    >
+      {/* Color dot / genre indicator */}
+      <div className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-[10px] font-bold uppercase"
+        style={{ background: `${color}18`, color, border: `1px solid ${color}30` }}>
+        {(e.main_style ?? "?").slice(0, 2).toUpperCase()}
+      </div>
+
+      {/* Main info */}
+      <div className="flex-1 min-w-0">
+        <div className="font-display font-semibold text-sm text-white leading-tight truncate group-hover:opacity-75 transition-opacity">
+          {e.event_name}
+        </div>
+        <div className="text-[11px] text-white/45 mt-0.5 flex items-center gap-1.5">
+          <span className="truncate">{display(e.venue_name)}</span>
+          {e.neighborhood && <><span>·</span><span className="truncate">{e.neighborhood}</span></>}
+        </div>
+      </div>
+
+      {/* Date + price */}
+      <div className="flex-shrink-0 text-right space-y-0.5">
+        <div className="text-[11px] text-white/50">{formatDate(e.event_date)}</div>
+        <div className={`text-xs font-bold ${e.is_free ? "text-emerald-400" : "text-white/80"}`}>
+          {formatPrice(e)}
+        </div>
+      </div>
+    </Link>
+  );
+};
+
+/* ── Ancienne carte grille (garde pour Search/Saved) ── */
+export const EventCard = ({ e, variant = "default" }: { e: EventRow; variant?: "default" | "compact" }) => {
+  if (variant === "compact") return <EventCardRow e={e} />;
+
+  const color = styleColor(e.main_style);
 
   return (
     <Link
       to={`/event/${e.id}`}
-      className="group relative block overflow-hidden rounded-xl bg-gradient-card border border-border hover:border-primary/40 transition-all duration-300 shadow-card hover:shadow-glow hover:-translate-y-0.5"
+      className="group relative block overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-0.5"
+      style={{ background: "#13131f", border: "1px solid #1e1e2e" }}
     >
-      {/* Glow shimmer on hover */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-xl"
-        style={{ background: "radial-gradient(ellipse at 50% 0%, hsl(322 95% 56% / 0.08), transparent 70%)" }} />
+      <div className="h-1 w-full" style={{ background: color }} />
 
       <div className="relative aspect-[16/10] overflow-hidden bg-muted">
         {e.image_url ? (
-          <img src={e.image_url} alt={e.event_name} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          <img src={e.image_url} alt={e.event_name} loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
         ) : (
-          <div className="h-full w-full bg-gradient-primary opacity-30 group-hover:opacity-40 transition-opacity duration-300" />
+          <div className="h-full w-full flex items-center justify-center"
+            style={{ background: `${color}15` }}>
+            <span className="font-display font-black text-4xl opacity-20" style={{ color }}>
+              {(e.main_style ?? "?").slice(0, 2).toUpperCase()}
+            </span>
+          </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
-
-        {/* Top-left badges */}
-        <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
-          <span className={`text-[10px] uppercase tracking-wider px-2 py-1 rounded-full border backdrop-blur-sm ${statusBadge(e.status)}`}>{e.status}</span>
-          {e.is_free && <span className="text-[10px] uppercase tracking-wider px-2 py-1 rounded-full bg-primary/20 text-primary-glow border border-primary/40 backdrop-blur-sm">Gratuit</span>}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#13131f] via-[#13131f]/20 to-transparent" />
+        <div className="absolute top-3 right-3">
+          <div className="text-[10px] font-semibold px-2 py-1 rounded-md backdrop-blur-sm text-white/80"
+            style={{ background: "rgba(0,0,0,0.5)" }}>
+            {formatDate(e.event_date)}
+          </div>
         </div>
-
-        {/* Hot badge */}
-        {isHot && (
-          <div className="absolute top-3 right-3 flex items-center gap-1 text-[10px] uppercase tracking-wider px-2 py-1 rounded-full bg-warning/20 text-warning border border-warning/40 backdrop-blur-sm font-medium">
-            <Flame className="h-2.5 w-2.5" />Populaire
-          </div>
-        )}
-
-        {/* Date overlay bottom-right when not hot */}
-        {!isHot && (
-          <div className="absolute bottom-3 right-3">
-            <div className="text-xs uppercase tracking-wider text-foreground/90 font-display font-medium px-2 py-1 rounded-md bg-background/60 backdrop-blur">
-              {formatDate(e.event_date)}
-            </div>
-          </div>
-        )}
-        {isHot && (
-          <div className="absolute bottom-3 right-3">
-            <div className="text-xs uppercase tracking-wider text-foreground/90 font-display font-medium px-2 py-1 rounded-md bg-background/60 backdrop-blur">
-              {formatDate(e.event_date)}
-            </div>
+        {e.is_free && (
+          <div className="absolute top-3 left-3">
+            <span className="text-[10px] font-bold px-2 py-1 rounded-full text-emerald-400"
+              style={{ background: "rgba(52,211,153,0.15)", border: "1px solid rgba(52,211,153,0.3)" }}>
+              Gratuit
+            </span>
           </div>
         )}
       </div>
 
-      <div className="p-4 space-y-2.5">
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.15em] text-primary-glow font-medium min-w-0">
-            <span className="truncate">{e.main_style ?? N_I}</span>
-            {e.event_type && <><span className="text-border flex-shrink-0">·</span><span className="text-muted-foreground truncate">{e.event_type}</span></>}
-          </div>
+      <div className="p-4 space-y-2">
+        <div className="text-[10px] uppercase tracking-widest font-semibold" style={{ color }}>
+          {e.main_style ?? N_I}
+          {e.event_type && <span className="text-white/30 ml-2">· {e.event_type}</span>}
         </div>
-
-        <h3 className="font-display text-lg font-semibold leading-tight line-clamp-2 group-hover:text-primary-glow transition-colors duration-200">
+        <h3 className="font-display font-bold text-base leading-tight line-clamp-2 text-white group-hover:opacity-75 transition-opacity">
           {e.event_name}
         </h3>
-
-        {/* Artists preview */}
-        {artists.length > 0 && (
+        {(e.artists ?? []).length > 0 && (
           <div className="flex flex-wrap gap-1">
-            {artists.map(a => (
-              <span key={a} className="text-[10px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">{a}</span>
+            {(e.artists ?? []).slice(0, 3).map(a => (
+              <span key={a} className="text-[10px] px-2 py-0.5 rounded-full text-white/50"
+                style={{ background: "#1e1e2e" }}>{a}</span>
             ))}
-            {(e.artists?.length ?? 0) > 3 && (
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">+{(e.artists?.length ?? 0) - 3}</span>
-            )}
           </div>
         )}
-
-        <div className="flex items-center gap-3 text-xs text-muted-foreground">
-          <span className="inline-flex items-center gap-1 min-w-0"><MapPin className="h-3 w-3 flex-shrink-0" /><span className="truncate">{display(e.venue_name)}</span></span>
-          {e.start_time && <span className="inline-flex items-center gap-1 flex-shrink-0"><Clock className="h-3 w-3" />{e.start_time.slice(0,5)}</span>}
-        </div>
-
-        <div className="flex items-center justify-between pt-1.5 border-t border-border/40">
-          <span className="text-xs text-muted-foreground truncate">{display(e.neighborhood)}</span>
-          <span className={`font-display font-bold text-sm flex-shrink-0 ml-2 ${e.is_free ? "text-success" : "text-foreground"}`}>
+        <div className="flex items-center justify-between pt-1.5" style={{ borderTop: "1px solid #1e1e2e" }}>
+          <div className="text-[11px] text-white/40 flex items-center gap-1">
+            <MapPin className="h-3 w-3" />{display(e.venue_name)}
+          </div>
+          <span className={`text-sm font-bold ${e.is_free ? "text-emerald-400" : "text-white"}`}>
             {formatPrice(e)}
           </span>
         </div>

@@ -1,140 +1,121 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { EventRow } from "@/lib/events";
-import { EventCard } from "@/components/EventCard";
+import { EventRow, formatDate } from "@/lib/events";
+import { EventCardScroll, EventCardRow } from "@/components/EventCard";
 import { Layout } from "@/components/Layout";
 import { Link } from "react-router-dom";
-import { ArrowRight, ChevronRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
-/* ── Scroll-reveal hook ── */
+/* ── Scroll reveal ── */
 const useReveal = () => {
   const ref = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const obs = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } }, { threshold: 0.08 });
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } }, { threshold: 0.06 });
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
   return { ref, visible };
 };
 
-/* ── Skeleton card ── */
-const Skeleton = () => <div className="aspect-[16/10] rounded-xl bg-card animate-pulse" />;
-
-/* ── Horizontal scroll section ── */
-const HScroll = ({ children }: { children: React.ReactNode }) => (
-  <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-    {children}
+/* ── Skeleton ── */
+const SkeletonScroll = () => (
+  <div className="flex gap-3 overflow-hidden">
+    {[1,2,3].map(i => <div key={i} className="flex-shrink-0 w-[200px] h-[160px] rounded-2xl animate-pulse" style={{ background: "#13131f" }} />)}
+  </div>
+);
+const SkeletonList = () => (
+  <div className="space-y-2">
+    {[1,2,3,4].map(i => <div key={i} className="h-[60px] rounded-xl animate-pulse" style={{ background: "#13131f" }} />)}
   </div>
 );
 
-/* ── Section component ── */
-const Section = ({
-  title, subtitle, events, loading, searchLink, hscroll = false,
-}: {
-  title: string; subtitle?: string; events: EventRow[]; loading: boolean; searchLink?: string; hscroll?: boolean;
+/* ── Section scroll horizontal ── */
+const ScrollSection = ({ title, subtitle, events, loading, to }: {
+  title: string; subtitle?: string; events: EventRow[]; loading: boolean; to?: string;
 }) => {
   const { ref, visible } = useReveal();
   return (
     <section
       ref={ref as React.RefObject<HTMLElement>}
-      className={`container space-y-5 transition-all duration-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+      className={`space-y-4 transition-all duration-600 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+    >
+      <div className="container flex items-end justify-between">
+        <div>
+          <h2 className="font-display font-black text-2xl md:text-3xl tracking-tight text-white">{title}</h2>
+          {subtitle && <p className="text-sm text-white/40 mt-0.5">{subtitle}</p>}
+        </div>
+        {to && (
+          <Link to={to} className="text-xs uppercase tracking-widest text-white/40 hover:text-white transition flex items-center gap-1">
+            Tout <ArrowRight className="h-3 w-3" />
+          </Link>
+        )}
+      </div>
+      <div className="pl-5 md:pl-0 md:container">
+        {loading ? <SkeletonScroll /> : events.length === 0 ? (
+          <p className="text-sm text-white/30 pl-0 md:pl-0">Aucun événement pour le moment.</p>
+        ) : (
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory md:grid md:grid-cols-3 lg:grid-cols-4 md:overflow-visible">
+            {events.map(e => (
+              <div key={e.id} className="snap-start flex-shrink-0 md:flex-shrink md:min-w-0">
+                <EventCardScroll e={e} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+};
+
+/* ── Section liste verticale ── */
+const ListSection = ({ title, subtitle, events, loading, to }: {
+  title: string; subtitle?: string; events: EventRow[]; loading: boolean; to?: string;
+}) => {
+  const { ref, visible } = useReveal();
+  return (
+    <section
+      ref={ref as React.RefObject<HTMLElement>}
+      className={`container space-y-4 transition-all duration-600 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
     >
       <div className="flex items-end justify-between">
         <div>
-          <h2 className="font-display text-2xl md:text-3xl font-bold">{title}</h2>
-          {subtitle && <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>}
+          <h2 className="font-display font-black text-2xl md:text-3xl tracking-tight text-white">{title}</h2>
+          {subtitle && <p className="text-sm text-white/40 mt-0.5">{subtitle}</p>}
         </div>
-        <Link
-          to={searchLink ?? "/search"}
-          className="inline-flex items-center gap-1 text-xs uppercase tracking-wider text-primary-glow hover:text-primary transition"
-        >
-          Tout voir <ArrowRight className="h-3 w-3" />
-        </Link>
+        {to && (
+          <Link to={to} className="text-xs uppercase tracking-widest text-white/40 hover:text-white transition flex items-center gap-1">
+            Tout <ArrowRight className="h-3 w-3" />
+          </Link>
+        )}
       </div>
-
-      {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} />)}
-        </div>
-      ) : events.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border p-8 text-center text-muted-foreground text-sm">
-          Aucun événement dans cette catégorie pour le moment.
-        </div>
-      ) : hscroll ? (
-        <HScroll>
-          {events.map(e => (
-            <div key={e.id} className="snap-start min-w-[280px] md:min-w-0 flex-shrink-0 md:flex-shrink">
-              <EventCard e={e} />
-            </div>
-          ))}
-        </HScroll>
+      {loading ? <SkeletonList /> : events.length === 0 ? (
+        <p className="text-sm text-white/30">Aucun événement pour le moment.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {events.map(e => <EventCard key={e.id} e={e} />)}
+        <div className="space-y-2">
+          {events.map(e => <EventCardRow key={e.id} e={e} />)}
         </div>
       )}
     </section>
   );
 };
 
-/* ── Featured event (top popular) ── */
-const Featured = ({ e }: { e: EventRow }) => (
-  <Link
-    to={`/event/${e.id}`}
-    className="group relative block overflow-hidden rounded-2xl border border-primary/30 hover:border-primary/60 transition-all duration-300 shadow-glow"
-    style={{ minHeight: 280 }}
-  >
-    {e.image_url
-      ? <img src={e.image_url} alt={e.event_name} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-      : <div className="absolute inset-0 bg-gradient-primary opacity-40" />}
-    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
-    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-      style={{ background: "radial-gradient(ellipse at 50% 100%, hsl(322 95% 56% / 0.15), transparent 70%)" }} />
-    <div className="relative h-full flex flex-col justify-end p-6 md:p-8 space-y-3">
-      <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-primary-glow font-medium">
-        <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse-glow" />
-        À la une
-      </div>
-      <h2 className="font-display text-3xl md:text-5xl font-bold tracking-tight leading-tight group-hover:text-primary-glow transition-colors">
-        {e.event_name}
-      </h2>
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
-        {e.venue_name && <span>{e.venue_name}</span>}
-        {e.main_style && <><span className="text-border">·</span><span>{e.main_style}</span></>}
-        {e.is_free && <span className="text-success font-medium">Gratuit</span>}
-      </div>
-      <span className="inline-flex items-center gap-1.5 self-start text-xs font-display font-semibold uppercase tracking-wider text-primary-glow group-hover:gap-2.5 transition-all">
-        Voir l'événement <ChevronRight className="h-3.5 w-3.5" />
-      </span>
-    </div>
-  </Link>
-);
+/* ── Tabs de date ── */
+type DateTab = "soir" | "demain" | "weekend" | "semaine";
+const TABS: { id: DateTab; label: string }[] = [
+  { id: "soir", label: "Ce soir" },
+  { id: "demain", label: "Demain" },
+  { id: "weekend", label: "Week-end" },
+  { id: "semaine", label: "Semaine" },
+];
 
-/* ── Stats bar ── */
-const StatsBar = ({ total, tonight, free }: { total: number; tonight: number; free: number }) => (
-  <div className="container">
-    <div className="grid grid-cols-3 divide-x divide-border rounded-xl border border-border bg-gradient-card overflow-hidden">
-      {[
-        { label: "Événements", value: total },
-        { label: "Ce soir", value: tonight },
-        { label: "Gratuits", value: free },
-      ].map(({ label, value }) => (
-        <div key={label} className="flex flex-col items-center py-5 px-4">
-          <span className="font-display text-2xl md:text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">{value}</span>
-          <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mt-1">{label}</span>
-        </div>
-      ))}
-    </div>
-  </div>
-);
-
-/* ── Main component ── */
+/* ── Main ── */
 const Index = () => {
   const [events, setEvents] = useState<EventRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [tab, setTab] = useState<DateTab>("soir");
 
   useEffect(() => {
     supabase.from("events").select("*").order("event_date", { ascending: true }).then(({ data }) => {
@@ -144,70 +125,103 @@ const Index = () => {
   }, []);
 
   const today = new Date().toISOString().slice(0, 10);
+  const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
   const in7 = new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10);
+  const friday = (() => {
+    const d = new Date(); const day = d.getDay();
+    const diff = day <= 5 ? 5 - day : 6;
+    return new Date(d.getTime() + diff * 86400000).toISOString().slice(0, 10);
+  })();
+  const sunday = new Date(new Date(friday).getTime() + 2 * 86400000).toISOString().slice(0, 10);
 
-  const tonight = events.filter(e => e.event_date === today && e.status !== "terminé");
-  const weekend = events.filter(e => e.event_date >= today && e.event_date <= in7 && e.status !== "terminé");
-  const free = events.filter(e => e.is_free && e.status !== "terminé");
-  const popular = [...events].filter(e => e.status !== "terminé").sort((a, b) => (b.popularity_score ?? 0) - (a.popularity_score ?? 0)).slice(0, 8);
-  const underground = events.filter(e => (e.event_type === "underground" || e.event_type === "rave") && e.status !== "terminé");
-  const afterhours = events.filter(e => e.event_type === "afterhours" && e.status !== "terminé");
-  const featured = popular[0];
+  const active = events.filter(e => e.status !== "terminé" && e.status !== "annulé");
+  const tonight = active.filter(e => e.event_date === today);
+  const tomorrowEvents = active.filter(e => e.event_date === tomorrow);
+  const weekendEvents = active.filter(e => e.event_date >= friday && e.event_date <= sunday);
+  const weekEvents = active.filter(e => e.event_date >= today && e.event_date <= in7);
+  const free = active.filter(e => e.is_free);
+  const popular = [...active].sort((a, b) => (b.popularity_score ?? 0) - (a.popularity_score ?? 0)).slice(0, 8);
+  const underground = active.filter(e => e.event_type === "underground" || e.event_type === "rave");
+
+  const tabEvents: Record<DateTab, EventRow[]> = {
+    soir: tonight, demain: tomorrowEvents, weekend: weekendEvents, semaine: weekEvents,
+  };
+  const featured = tabEvents[tab];
+
+  // Today's display
+  const todayDisplay = new Date().toLocaleDateString("fr-CA", { weekday: "long", day: "numeric", month: "long" });
 
   return (
     <Layout>
-      {/* ── Hero ── */}
-      <section className="relative overflow-hidden noise">
-        {/* Animated orbs */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute -top-32 -left-32 w-[600px] h-[600px] rounded-full opacity-[0.07]"
-            style={{ background: "radial-gradient(circle, hsl(322 95% 56%), transparent 70%)", animation: "pulse-glow 4s ease-in-out infinite" }} />
-          <div className="absolute -bottom-48 right-0 w-[500px] h-[500px] rounded-full opacity-[0.06]"
-            style={{ background: "radial-gradient(circle, hsl(280 80% 55%), transparent 70%)", animation: "pulse-glow 5s ease-in-out infinite reverse" }} />
+      {/* ── Header hero ── */}
+      <section className="container pt-8 pb-6 space-y-6">
+        <div className="space-y-1 animate-fade-up">
+          <p className="text-xs uppercase tracking-[0.3em] text-white/30 font-medium">{todayDisplay}</p>
+          <h1 className="font-display font-black text-5xl md:text-7xl tracking-tighter leading-none text-white">
+            La nuit<br />
+            <span style={{ WebkitTextStroke: "1px rgba(240,20,107,0.8)", color: "transparent" }}>Montréal.</span>
+          </h1>
         </div>
-        <div className="absolute inset-0 bg-gradient-hero pointer-events-none" />
 
-        <div className="container relative py-16 md:py-28">
-          <div className="max-w-3xl space-y-6 animate-fade-up">
-            <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-primary-glow">
-              <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse-glow" />
-              Agenda nightlife · Montréal
-            </div>
-            <h1 className="font-display text-5xl md:text-7xl font-bold leading-[0.95] tracking-tighter text-balance">
-              La nuit de <span className="bg-gradient-primary bg-clip-text text-transparent">Montréal</span>,<br />sans détour.
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-xl">
-              Techno, house, rap, afro, latino, concerts, afterhours et raves underground — tout ce qui se passe ce soir et ce week-end.
-            </p>
-            <div className="flex flex-wrap gap-3 pt-2">
-              <Link to="/search" className="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-gradient-primary font-display font-semibold shadow-glow hover:opacity-90 transition">
-                Explorer <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link to="/search?free=1" className="inline-flex items-center px-6 py-3 rounded-md border border-border hover:border-primary/50 font-display font-medium transition">
-                Soirées gratuites
-              </Link>
-            </div>
+        {/* Stats pills */}
+        {!loading && (
+          <div className="flex flex-wrap gap-2 animate-fade-up" style={{ animationDelay: "0.1s" }}>
+            <span className="text-xs px-3 py-1.5 rounded-full font-semibold text-white/70" style={{ background: "#13131f", border: "1px solid #1e1e2e" }}>
+              {active.length} événements
+            </span>
+            <span className="text-xs px-3 py-1.5 rounded-full font-semibold text-emerald-400" style={{ background: "rgba(52,211,153,0.1)", border: "1px solid rgba(52,211,153,0.2)" }}>
+              {free.length} gratuits
+            </span>
+            <span className="text-xs px-3 py-1.5 rounded-full font-semibold" style={{ background: "rgba(240,20,107,0.1)", border: "1px solid rgba(240,20,107,0.2)", color: "#f0146b" }}>
+              {tonight.length} ce soir
+            </span>
           </div>
+        )}
+
+        {/* Date tabs */}
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 animate-fade-up" style={{ animationDelay: "0.15s" }}>
+          {TABS.map(t => (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              className="flex-shrink-0 text-xs font-semibold px-4 py-2 rounded-full transition-all duration-200"
+              style={tab === t.id
+                ? { background: "#f0146b", color: "white" }
+                : { background: "#13131f", color: "rgba(255,255,255,0.4)", border: "1px solid #1e1e2e" }
+              }
+            >
+              {t.label}
+              {!loading && tabEvents[t.id].length > 0 && (
+                <span className="ml-1.5 text-[10px] opacity-70">{tabEvents[t.id].length}</span>
+              )}
+            </button>
+          ))}
         </div>
       </section>
 
-      <div className="space-y-16 py-12">
-        {/* Stats bar */}
-        {!loading && <StatsBar total={events.length} tonight={tonight.length} free={free.length} />}
+      {/* ── Tab content ── */}
+      <div className="space-y-12 pb-12">
+        {/* Featured scroll for selected tab */}
+        <ScrollSection
+          title={TABS.find(t => t.id === tab)?.label ?? ""}
+          subtitle={tab === "soir" ? "Sortir maintenant" : tab === "demain" ? formatDate(tomorrow) : undefined}
+          events={featured}
+          loading={loading}
+          to="/search"
+        />
 
-        {/* Featured event */}
-        {!loading && featured && (
-          <section className="container animate-fade-up" style={{ animationDelay: "0.1s" }}>
-            <Featured e={featured} />
-          </section>
+        <div className="container"><div style={{ height: "1px", background: "#1e1e2e" }} /></div>
+
+        {/* Populaires en liste */}
+        <ListSection title="Populaires" subtitle="Ce que tout le monde regarde" events={popular} loading={loading} to="/search?sort=popularity" />
+
+        {/* Underground en scroll */}
+        {(loading || underground.length > 0) && (
+          <ScrollSection title="Underground" subtitle="Lieux secrets · collectifs" events={underground} loading={loading} />
         )}
 
-        <Section title="Ce soir" subtitle="Sortir tout de suite" events={tonight} loading={loading} searchLink="/search" hscroll />
-        <Section title="Ce week-end" subtitle="Les 7 prochains jours" events={weekend} loading={loading} hscroll />
-        <Section title="Populaires" subtitle="Ce que tout le monde regarde" events={popular} loading={loading} />
-        <Section title="Afterhours" subtitle="Quand les clubs ferment" events={afterhours} loading={loading} />
-        <Section title="Underground & raves" subtitle="Lieux secrets, collectifs locaux" events={underground} loading={loading} />
-        <Section title="Gratuit" subtitle="Aucun billet requis" events={free} loading={loading} searchLink="/search?free=1" hscroll />
+        {/* Gratuit en liste */}
+        <ListSection title="Gratuit" subtitle="Sans billet requis" events={free} loading={loading} to="/search?free=1" />
       </div>
     </Layout>
   );

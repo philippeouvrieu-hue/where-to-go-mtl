@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { EventRow } from "@/lib/events";
-import { EventCard } from "@/components/EventCard";
+import { EventCard, EventCardRow } from "@/components/EventCard";
 import { Layout } from "@/components/Layout";
 import { Search as SearchIcon, LayoutGrid, List, X, SlidersHorizontal } from "lucide-react";
 
@@ -235,8 +235,8 @@ const Search = () => {
             )}
           </div>
         ) : view === "list" ? (
-          <div className="space-y-3">
-            {filtered.map(e => <EventCard key={e.id} e={e} variant="compact" />)}
+          <div className="space-y-2">
+            {filtered.map(e => <EventCardRow key={e.id} e={e} />)}
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
