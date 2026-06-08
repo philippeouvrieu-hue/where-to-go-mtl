@@ -1,13 +1,8 @@
-// Service Worker minimal — Where To Go Mtl
-const CACHE = "wtg-v1";
-
-// Assets à mettre en cache pour un démarrage instantané
-const PRECACHE = ["/", "/manifest.json", "/icon-192.png", "/icon-512.png"];
+// Service Worker — Where To Go Mtl
+const CACHE = "wtg-v3";
 
 self.addEventListener("install", e => {
-  e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(PRECACHE)).then(() => self.skipWaiting())
-  );
+  e.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener("activate", e => {
@@ -18,26 +13,19 @@ self.addEventListener("activate", e => {
   );
 });
 
-// Network-first pour les requêtes API Supabase, cache-first pour les assets statiques
+// Network-first : toujours la version fraîche, fallback cache si hors-ligne
 self.addEventListener("fetch", e => {
+  if (e.request.method !== "GET") return;
   const url = new URL(e.request.url);
-
-  // Toujours aller au réseau pour Supabase
   if (url.hostname.includes("supabase.co")) return;
 
-  // Cache-first pour les assets statiques
-  if (e.request.method === "GET") {
-    e.respondWith(
-      caches.match(e.request).then(cached => {
-        if (cached) return cached;
-        return fetch(e.request).then(res => {
-          if (res.ok && e.request.url.startsWith(self.location.origin)) {
-            const clone = res.clone();
-            caches.open(CACHE).then(c => c.put(e.request, clone));
-          }
-          return res;
-        }).catch(() => cached);
-      })
-    );
-  }
+  e.respondWith(
+    fetch(e.request).then(res => {
+      if (res.ok) {
+        const clone = res.clone();
+        caches.open(CACHE).then(c => c.put(e.request, clone));
+      }
+      return res;
+    }).catch(() => caches.match(e.request))
+  );
 });
