@@ -10,11 +10,13 @@ export const TopBar = () => {
       style={{ background: "rgba(8,8,16,0.85)", borderColor: "#1e1e2e", paddingTop: "env(safe-area-inset-top)" }}
     >
       <div className="container flex items-center justify-between h-14">
-        <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="h-7 w-7 rounded-lg flex-shrink-0" style={{ background: "linear-gradient(135deg, #f0146b, #7c3aed)" }} />
-          <div className="leading-none">
-            <div className="font-display font-black tracking-tighter text-sm text-white">WHERE TO GO</div>
-            <div className="text-[9px] uppercase tracking-[0.3em] text-white/30">Montréal</div>
+        <Link to="/" className="flex items-center group">
+          <div className="leading-none space-y-0.5">
+            <div className="flex items-center gap-1.5">
+              <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "#f0146b" }} />
+              <span className="text-[9px] uppercase tracking-[0.35em] text-white/30 font-medium">Montréal</span>
+            </div>
+            <div className="font-display font-black tracking-tighter text-lg text-white leading-none">WHERE TO GO</div>
           </div>
         </Link>
         <nav className="hidden md:flex items-center gap-1 text-sm">
@@ -66,10 +68,10 @@ export const BottomNav = () => {
           const active = loc.pathname === to || (to !== "/" && loc.pathname.startsWith(to));
           return (
             <Link key={to} to={to}
-              className="flex flex-col items-center gap-1 py-3 text-[10px] uppercase tracking-wider transition-colors"
+              className="flex flex-col items-center gap-1.5 py-3.5 text-[11px] font-medium tracking-wide transition-colors"
               style={{ color: active ? "#f0146b" : "rgba(255,255,255,0.3)" }}
             >
-              <Icon className="h-5 w-5" />{label}
+              <Icon className="h-6 w-6" />{label}
             </Link>
           );
         })}

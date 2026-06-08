@@ -155,11 +155,14 @@ const Index = () => {
     <Layout>
       {/* ── Header hero ── */}
       <section className="container pt-8 pb-6 space-y-6">
-        <div className="space-y-1 animate-fade-up">
-          <p className="text-xs uppercase tracking-[0.3em] text-white/30 font-medium">{todayDisplay}</p>
-          <h1 className="font-display font-black text-5xl md:text-7xl tracking-tighter leading-none text-white">
-            La nuit<br />
-            <span style={{ WebkitTextStroke: "1px rgba(240,20,107,0.8)", color: "transparent" }}>Montréal.</span>
+        <div className="space-y-2 animate-fade-up">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#f0146b" }} />
+            <span className="text-[10px] uppercase tracking-[0.35em] text-white/35 font-medium">Montréal</span>
+          </div>
+          <h1 className="font-display font-black tracking-tighter leading-none text-white"
+            style={{ fontSize: "clamp(2.8rem, 10vw, 5rem)" }}>
+            WHERE TO GO
           </h1>
         </div>
 
