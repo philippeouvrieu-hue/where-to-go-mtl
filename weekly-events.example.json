@@ -1,0 +1,37 @@
+[
+  {
+    "event_name": "Exemple d’événement à vérifier",
+    "event_date": "2026-06-12",
+    "start_time": null,
+    "end_time": null,
+    "venue_name": "Lieu exemple",
+    "address": null,
+    "neighborhood": null,
+    "city": "Montréal",
+    "main_style": null,
+    "secondary_styles": [],
+    "event_type": null,
+    "artists": [],
+    "description": null,
+    "price_min": null,
+    "price_max": null,
+    "is_free": null,
+    "is_paid": null,
+    "ticket_required": null,
+    "ticket_url": null,
+    "sources": [
+      {
+        "name": "Source exemple",
+        "url": "https://example.com"
+      }
+    ],
+    "image_url": null,
+    "min_age": null,
+    "dress_code": null,
+    "entry_difficulty": null,
+    "entry_difficulty_reason": null,
+    "popularity_score": 0,
+    "info_reliability_score": 50,
+    "status": "à vérifier"
+  }
+]
