@@ -153,6 +153,40 @@ const Index = () => {
 
   return (
     <Layout>
+      {/* ── Bokeh background ── */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
+        {[
+          { cx: "15%", cy: "25%", r: 120, color: "rgba(240,20,107,0.07)" },
+          { cx: "80%", cy: "15%", r: 90,  color: "rgba(124,58,237,0.07)" },
+          { cx: "60%", cy: "55%", r: 70,  color: "rgba(77,166,255,0.06)" },
+          { cx: "30%", cy: "70%", r: 100, color: "rgba(240,20,107,0.05)" },
+          { cx: "90%", cy: "75%", r: 80,  color: "rgba(124,58,237,0.05)" },
+        ].map((b, i) => (
+          <div key={i} style={{
+            position: "absolute", left: b.cx, top: b.cy,
+            width: b.r * 2, height: b.r * 2,
+            transform: "translate(-50%,-50%)", borderRadius: "50%",
+            background: `radial-gradient(circle, ${b.color} 0%, transparent 70%)`,
+          }} />
+        ))}
+        {[
+          { x: "25%", y: "30%", c: "#f0146b", s: 5 },
+          { x: "72%", y: "18%", c: "#a855f7", s: 4 },
+          { x: "85%", y: "48%", c: "#4da6ff", s: 6 },
+          { x: "12%", y: "62%", c: "#f0146b", s: 3 },
+          { x: "55%", y: "20%", c: "#7c3aed", s: 4 },
+          { x: "40%", y: "80%", c: "#4da6ff", s: 5 },
+          { x: "92%", y: "35%", c: "#f0146b", s: 3 },
+        ].map((d, i) => (
+          <div key={i} style={{
+            position: "absolute", left: d.x, top: d.y,
+            width: d.s, height: d.s, borderRadius: "50%",
+            background: d.c, opacity: 0.55,
+            boxShadow: `0 0 ${d.s * 4}px ${d.s * 2}px ${d.c}55`,
+          }} />
+        ))}
+      </div>
+
       {/* ── Header hero ── */}
       <section className="container pt-8 pb-6 space-y-6">
         <div className="space-y-2 animate-fade-up">
