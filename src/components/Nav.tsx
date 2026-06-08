@@ -3,40 +3,32 @@ import { Home, Search, Heart, Shield, UserCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 export const TopBar = () => {
-  const { user, isAdmin, signOut } = useAuth();
+  const { user, isAdmin } = useAuth();
+  // Sur mobile : juste le safe-area-inset en haut, pas de barre visible
+  // Sur desktop : nav complète
   return (
-    <header
-      className="sticky top-0 z-40 backdrop-blur-xl border-b"
-      style={{ background: "rgba(8,8,16,0.85)", borderColor: "#1e1e2e", paddingTop: "env(safe-area-inset-top)" }}
-    >
-      <div className="container flex items-center justify-between h-14">
-        <Link to="/" className="flex items-center group">
-          <div className="leading-none space-y-0.5">
-            <div className="flex items-center gap-1.5">
-              <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "#f0146b" }} />
-              <span className="text-[9px] uppercase tracking-[0.35em] text-white/30 font-medium">Montréal</span>
-            </div>
-            <div className="font-display font-black tracking-tighter text-lg text-white leading-none">WHERE TO GO</div>
-          </div>
+    <header className="sticky top-0 z-40" style={{ paddingTop: "env(safe-area-inset-top)" }}>
+      <div
+        className="hidden md:flex container items-center justify-between h-14 backdrop-blur-xl border-b"
+        style={{ background: "rgba(8,8,16,0.85)", borderColor: "#1e1e2e" }}
+      >
+        <Link to="/" className="flex items-center gap-1.5">
+          <div className="w-1.5 h-1.5 rounded-full" style={{ background: "#f0146b" }} />
+          <span className="font-display font-black tracking-tight text-white">WHERE TO GO</span>
+          <span className="text-[10px] uppercase tracking-[0.3em] text-white/30 ml-1">Montréal</span>
         </Link>
-        <nav className="hidden md:flex items-center gap-1 text-sm">
+        <nav className="flex items-center gap-1 text-sm">
           <NavItem to="/" label="Accueil" />
           <NavItem to="/search" label="Recherche" />
           <NavItem to="/saved" label="Favoris" />
           {isAdmin && <NavItem to="/admin" label="Admin" />}
         </nav>
-        <div className="flex items-center gap-2">
-          {user ? (
-            <button onClick={signOut} className="text-xs text-white/40 hover:text-white transition px-3 py-2">
-              Déconnexion
-            </button>
-          ) : (
-            <Link to="/auth" className="text-xs font-semibold px-4 py-2 rounded-full text-white transition"
-              style={{ background: "rgba(240,20,107,0.15)", border: "1px solid rgba(240,20,107,0.3)", color: "#f0146b" }}>
-              Connexion
-            </Link>
-          )}
-        </div>
+        {!user && (
+          <Link to="/auth" className="text-xs font-semibold px-4 py-2 rounded-full text-white transition"
+            style={{ background: "rgba(240,20,107,0.15)", border: "1px solid rgba(240,20,107,0.3)", color: "#f0146b" }}>
+            Connexion
+          </Link>
+        )}
       </div>
     </header>
   );
