@@ -10,6 +10,7 @@ import Saved from "./pages/Saved";
 import Auth from "./pages/Auth";
 import EventDetail from "./pages/EventDetail";
 import Admin from "./pages/Admin";
+import Account from "./pages/Account";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/event/:id" element={<EventDetail />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/account" element={<Account />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

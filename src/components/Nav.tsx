@@ -1,5 +1,5 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { Home, Search, Heart, Shield } from "lucide-react";
+import { Home, Search, Heart, Shield, UserCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 export const TopBar = () => {
@@ -53,6 +53,7 @@ export const BottomNav = () => {
     { to: "/", icon: Home, label: "Accueil" },
     { to: "/search", icon: Search, label: "Recherche" },
     { to: "/saved", icon: Heart, label: "Favoris" },
+    { to: "/account", icon: UserCircle, label: "Compte" },
     ...(isAdmin ? [{ to: "/admin", icon: Shield, label: "Admin" }] : []),
   ];
   return (
@@ -60,7 +61,7 @@ export const BottomNav = () => {
       className="md:hidden fixed bottom-0 inset-x-0 z-40 backdrop-blur-xl border-t"
       style={{ background: "rgba(8,8,16,0.92)", borderColor: "#1e1e2e", paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="grid grid-cols-4 max-w-md mx-auto">
+      <div className={`grid max-w-md mx-auto`} style={{ gridTemplateColumns: `repeat(${items.length}, 1fr)` }}>
         {items.map(({ to, icon: Icon, label }) => {
           const active = loc.pathname === to || (to !== "/" && loc.pathname.startsWith(to));
           return (
