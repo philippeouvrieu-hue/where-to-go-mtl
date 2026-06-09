@@ -2,7 +2,7 @@ import { EventRow, formatDate, formatPrice, display, N_I, styleColor } from "@/l
 import { Link } from "react-router-dom";
 import { MapPin } from "lucide-react";
 
-/* ── Carte horizontale scroll style B (Ce soir) ── */
+/* ── Carte horizontale scroll style A (Ce soir) ── */
 export const EventCardScroll = ({ e }: { e: EventRow }) => {
   const color = styleColor(e.main_style);
   const initials = (e.main_style ?? "?").slice(0, 2).toUpperCase();
@@ -11,28 +11,35 @@ export const EventCardScroll = ({ e }: { e: EventRow }) => {
     ? new Date(e.event_date + "T12:00:00").toLocaleDateString("fr-CA", { weekday: "short" })
     : "";
 
+  // Couleurs de dégradé par genre
+  const grad = `linear-gradient(135deg, ${color}, ${color}99)`;
+
   return (
     <Link
       to={`/event/${e.id}`}
-      className="group flex-shrink-0 w-[115px] rounded-xl overflow-hidden transition-transform duration-200 hover:-translate-y-1"
-      style={{ border: "1px solid #1e1e2e", background: "#13131f" }}
+      className="group flex-shrink-0 w-[110px] rounded-xl overflow-hidden transition-transform duration-200 hover:-translate-y-1"
+      style={{ border: "0.5px solid #1e1e2e", background: "#13131f" }}
     >
-      {/* Bloc couleur / image */}
-      <div className="relative h-[55px] overflow-hidden flex items-center justify-center"
-        style={{ background: `linear-gradient(135deg, ${color}44, ${color}22)` }}>
-        {e.image_url ? (
+      {/* Bloc image / dégradé */}
+      <div className="relative h-[52px] overflow-hidden flex items-center justify-center"
+        style={{ background: grad }}>
+        {e.image_url && (
           <img src={e.image_url} alt={e.event_name} loading="lazy"
-            className="h-full w-full object-cover" />
-        ) : (
-          <span className="font-display font-black text-lg opacity-40" style={{ color }}>
+            className="absolute inset-0 h-full w-full object-cover" />
+        )}
+        {/* Overlay léger pour lisibilité */}
+        <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.25)" }} />
+        {/* Initiales si pas d'image */}
+        {!e.image_url && (
+          <span className="relative font-display font-black text-2xl"
+            style={{ color: "rgba(255,255,255,0.22)", letterSpacing: "-1px" }}>
             {initials}
           </span>
         )}
-        <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${color}33, transparent)` }} />
       </div>
 
       {/* Info */}
-      <div style={{ padding: "7px 8px" }}>
+      <div style={{ padding: "7px 9px" }}>
         <h3 className="font-display font-bold text-white leading-tight line-clamp-2 group-hover:opacity-80 transition-opacity"
           style={{ fontSize: 11 }}>
           {e.event_name}
@@ -41,7 +48,7 @@ export const EventCardScroll = ({ e }: { e: EventRow }) => {
           <span style={{ fontSize: 10, color: "rgba(255,255,255,0.35)" }}>
             {dayLabel}{e.start_time ? ` · ${e.start_time.slice(0, 5)}` : ""}
           </span>
-          <span style={{ fontSize: 10, fontWeight: 700, color: e.is_free ? "#34d399" : "rgba(255,255,255,0.7)" }}>
+          <span style={{ fontSize: 10, fontWeight: 700, color: e.is_free ? "#34d399" : "rgba(255,255,255,0.65)" }}>
             {price}
           </span>
         </div>
