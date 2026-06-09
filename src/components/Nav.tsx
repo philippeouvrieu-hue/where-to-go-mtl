@@ -1,5 +1,5 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { Home, Search, Heart, Shield, UserCircle } from "lucide-react";
+import { Home, Search, Heart, Shield, UserCircle, Map } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 export const TopBar = () => {
@@ -46,6 +46,7 @@ export const BottomNav = () => {
   const items = [
     { to: "/", icon: Home, label: "Accueil" },
     { to: "/search", icon: Search, label: "Recherche" },
+    { to: "/map", icon: Map, label: "Carte" },
     { to: "/saved", icon: Heart, label: "Favoris" },
     { to: "/account", icon: UserCircle, label: "Compte" },
     ...(isAdmin ? [{ to: "/admin", icon: Shield, label: "Admin" }] : []),
