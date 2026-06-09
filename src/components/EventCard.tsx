@@ -1,65 +1,50 @@
 import { EventRow, formatDate, formatPrice, display, N_I, styleColor } from "@/lib/events";
 import { Link } from "react-router-dom";
-import { MapPin, Clock } from "lucide-react";
+import { MapPin } from "lucide-react";
 
-/* ── Carte horizontale scroll (Ce soir) ── */
+/* ── Carte horizontale scroll style B (Ce soir) ── */
 export const EventCardScroll = ({ e }: { e: EventRow }) => {
   const color = styleColor(e.main_style);
+  const initials = (e.main_style ?? "?").slice(0, 2).toUpperCase();
+  const price = e.is_free ? "Gratuit" : formatPrice(e);
+  const dayLabel = e.event_date
+    ? new Date(e.event_date + "T12:00:00").toLocaleDateString("fr-CA", { weekday: "short" })
+    : "";
+
   return (
     <Link
       to={`/event/${e.id}`}
-      className="group flex-shrink-0 w-[155px] rounded-2xl overflow-hidden transition-transform duration-200 hover:-translate-y-1"
-      style={{ border: "1px solid #1e1e2e" }}
+      className="group flex-shrink-0 w-[115px] rounded-xl overflow-hidden transition-transform duration-200 hover:-translate-y-1"
+      style={{ border: "1px solid #1e1e2e", background: "#13131f" }}
     >
-      {/* Image */}
-      <div className="relative h-[44px] overflow-hidden" style={{ background: `${color}18` }}>
+      {/* Bloc couleur / image */}
+      <div className="relative h-[55px] overflow-hidden flex items-center justify-center"
+        style={{ background: `linear-gradient(135deg, ${color}44, ${color}22)` }}>
         {e.image_url ? (
-          <img
-            src={e.image_url} alt={e.event_name} loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
+          <img src={e.image_url} alt={e.event_name} loading="lazy"
+            className="h-full w-full object-cover" />
         ) : (
-          <div className="h-full w-full flex items-center justify-center">
-            <span className="font-display font-black text-5xl opacity-15" style={{ color }}>
-              {(e.main_style ?? "?").slice(0, 2).toUpperCase()}
-            </span>
-          </div>
-        )}
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-        {/* Genre pill */}
-        <div className="absolute top-2.5 left-2.5">
-          <span className="text-[9px] uppercase tracking-widest font-bold px-2 py-1 rounded-full"
-            style={{ background: `${color}33`, color, border: `1px solid ${color}55`, backdropFilter: "blur(4px)" }}>
-            {e.main_style ?? "event"}
+          <span className="font-display font-black text-lg opacity-40" style={{ color }}>
+            {initials}
           </span>
-        </div>
-        {/* Price badge */}
-        <div className="absolute top-2.5 right-2.5">
-          {e.is_free
-            ? <span className="text-[9px] font-bold px-2 py-1 rounded-full text-emerald-400"
-                style={{ background: "rgba(52,211,153,0.2)", border: "1px solid rgba(52,211,153,0.3)" }}>Gratuit</span>
-            : <span className="text-[9px] font-semibold px-2 py-1 rounded-full text-white/80"
-                style={{ background: "rgba(0,0,0,0.5)" }}>{formatPrice(e)}</span>
-          }
-        </div>
+        )}
+        <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${color}33, transparent)` }} />
       </div>
 
       {/* Info */}
-      <div className="p-3 space-y-1.5" style={{ background: "#13131f" }}>
-        <h3 className="font-display font-bold text-sm leading-tight text-white line-clamp-2 group-hover:opacity-80 transition-opacity">
+      <div style={{ padding: "7px 8px" }}>
+        <h3 className="font-display font-bold text-white leading-tight line-clamp-2 group-hover:opacity-80 transition-opacity"
+          style={{ fontSize: 11 }}>
           {e.event_name}
         </h3>
-        <div className="flex items-center gap-1 text-[11px] text-white/45">
-          <MapPin className="h-3 w-3 flex-shrink-0" />
-          <span className="truncate">{display(e.venue_name)}</span>
+        <div className="flex items-center justify-between mt-1.5">
+          <span style={{ fontSize: 10, color: "rgba(255,255,255,0.35)" }}>
+            {dayLabel}{e.start_time ? ` · ${e.start_time.slice(0, 5)}` : ""}
+          </span>
+          <span style={{ fontSize: 10, fontWeight: 700, color: e.is_free ? "#34d399" : "rgba(255,255,255,0.7)" }}>
+            {price}
+          </span>
         </div>
-        {e.start_time && (
-          <div className="flex items-center gap-1 text-[11px] text-white/45">
-            <Clock className="h-3 w-3 flex-shrink-0" />
-            <span>{e.start_time.slice(0, 5)}</span>
-          </div>
-        )}
       </div>
     </Link>
   );

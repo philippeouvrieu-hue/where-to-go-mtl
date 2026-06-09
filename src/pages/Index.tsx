@@ -23,7 +23,7 @@ const useReveal = () => {
 /* ── Skeleton ── */
 const SkeletonScroll = () => (
   <div className="flex gap-3 overflow-hidden">
-    {[1,2,3].map(i => <div key={i} className="flex-shrink-0 w-[155px] h-[120px] rounded-2xl animate-pulse" style={{ background: "#13131f" }} />)}
+    {[1,2,3,4].map(i => <div key={i} className="flex-shrink-0 w-[115px] h-[100px] rounded-xl animate-pulse" style={{ background: "#13131f" }} />)}
   </div>
 );
 const SkeletonList = () => (
