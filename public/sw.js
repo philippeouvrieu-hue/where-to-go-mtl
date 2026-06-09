@@ -1,5 +1,5 @@
-// Service Worker — Where To Go Mtl
-const CACHE = "wtg-v3";
+// Service Worker — The Move Mtl
+const CACHE = "wtg-v4";
 
 self.addEventListener("install", e => {
   e.waitUntil(self.skipWaiting());
