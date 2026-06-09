@@ -1,3 +1,9 @@
+# Secrets — ne jamais envoyer sur GitHub
+config.json
+events-db.json
+montreal-events.html
+*.py
+
 # Logs
 logs
 *.log

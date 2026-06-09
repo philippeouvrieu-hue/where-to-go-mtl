@@ -8,46 +8,58 @@ export const EventCardScroll = ({ e }: { e: EventRow }) => {
   return (
     <Link
       to={`/event/${e.id}`}
-      className="group flex-shrink-0 w-[200px] rounded-2xl overflow-hidden transition-transform duration-200 hover:-translate-y-0.5"
-      style={{ background: "#13131f", border: "1px solid #1e1e2e" }}
+      className="group flex-shrink-0 w-[200px] rounded-2xl overflow-hidden transition-transform duration-200 hover:-translate-y-1"
+      style={{ border: "1px solid #1e1e2e" }}
     >
-      {/* Color accent bar */}
-      <div className="h-1 w-full" style={{ background: color }} />
-
-      <div className="p-4 space-y-3">
-        <div className="flex items-center justify-between">
-          <span className="text-[10px] uppercase tracking-widest font-semibold" style={{ color }}>
-            {e.main_style ?? N_I}
+      {/* Image */}
+      <div className="relative h-[130px] overflow-hidden" style={{ background: `${color}18` }}>
+        {e.image_url ? (
+          <img
+            src={e.image_url} alt={e.event_name} loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <div className="h-full w-full flex items-center justify-center">
+            <span className="font-display font-black text-5xl opacity-15" style={{ color }}>
+              {(e.main_style ?? "?").slice(0, 2).toUpperCase()}
+            </span>
+          </div>
+        )}
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+        {/* Genre pill */}
+        <div className="absolute top-2.5 left-2.5">
+          <span className="text-[9px] uppercase tracking-widest font-bold px-2 py-1 rounded-full"
+            style={{ background: `${color}33`, color, border: `1px solid ${color}55`, backdropFilter: "blur(4px)" }}>
+            {e.main_style ?? "event"}
           </span>
+        </div>
+        {/* Price badge */}
+        <div className="absolute top-2.5 right-2.5">
           {e.is_free
-            ? <span className="text-[10px] font-bold text-emerald-400">Gratuit</span>
-            : <span className="text-[10px] font-semibold text-white/60">{formatPrice(e)}</span>
+            ? <span className="text-[9px] font-bold px-2 py-1 rounded-full text-emerald-400"
+                style={{ background: "rgba(52,211,153,0.2)", border: "1px solid rgba(52,211,153,0.3)" }}>Gratuit</span>
+            : <span className="text-[9px] font-semibold px-2 py-1 rounded-full text-white/80"
+                style={{ background: "rgba(0,0,0,0.5)" }}>{formatPrice(e)}</span>
           }
         </div>
+      </div>
 
-        <h3 className="font-display font-bold text-base leading-tight text-white line-clamp-2 group-hover:opacity-80 transition-opacity">
+      {/* Info */}
+      <div className="p-3 space-y-1.5" style={{ background: "#13131f" }}>
+        <h3 className="font-display font-bold text-sm leading-tight text-white line-clamp-2 group-hover:opacity-80 transition-opacity">
           {e.event_name}
         </h3>
-
-        <div className="space-y-1">
-          <div className="flex items-center gap-1.5 text-[11px] text-white/50">
-            <MapPin className="h-3 w-3 flex-shrink-0" />
-            <span className="truncate">{display(e.venue_name)}</span>
+        <div className="flex items-center gap-1 text-[11px] text-white/45">
+          <MapPin className="h-3 w-3 flex-shrink-0" />
+          <span className="truncate">{display(e.venue_name)}</span>
+        </div>
+        {e.start_time && (
+          <div className="flex items-center gap-1 text-[11px] text-white/45">
+            <Clock className="h-3 w-3 flex-shrink-0" />
+            <span>{e.start_time.slice(0, 5)}</span>
           </div>
-          {e.start_time && (
-            <div className="flex items-center gap-1.5 text-[11px] text-white/50">
-              <Clock className="h-3 w-3 flex-shrink-0" />
-              <span>{e.start_time.slice(0, 5)}{e.end_time ? ` → ${e.end_time.slice(0, 5)}` : ""}</span>
-            </div>
-          )}
-        </div>
-
-        <div
-          className="inline-flex items-center gap-1 text-[11px] font-semibold px-3 py-1.5 rounded-full transition-opacity group-hover:opacity-80"
-          style={{ background: `${color}22`, color }}
-        >
-          Voir →
-        </div>
+        )}
       </div>
     </Link>
   );
