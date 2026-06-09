@@ -57,7 +57,7 @@ const ScrollSection = ({ title, subtitle, events, loading, to }: {
         {loading ? <SkeletonScroll /> : events.length === 0 ? (
           <p className="text-sm text-white/30 pl-0 md:pl-0">Aucun événement pour le moment.</p>
         ) : (
-          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory md:grid md:grid-cols-3 lg:grid-cols-4 md:overflow-visible">
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-proximity md:grid md:grid-cols-3 lg:grid-cols-4 md:overflow-visible">
             {events.map(e => (
               <div key={e.id} className="snap-start flex-shrink-0 md:flex-shrink md:min-w-0">
                 <EventCardScroll e={e} />

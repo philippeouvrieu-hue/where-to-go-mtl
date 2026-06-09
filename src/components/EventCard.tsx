@@ -8,11 +8,11 @@ export const EventCardScroll = ({ e }: { e: EventRow }) => {
   return (
     <Link
       to={`/event/${e.id}`}
-      className="group flex-shrink-0 w-[200px] rounded-2xl overflow-hidden transition-transform duration-200 hover:-translate-y-1"
+      className="group flex-shrink-0 w-[155px] rounded-2xl overflow-hidden transition-transform duration-200 hover:-translate-y-1"
       style={{ border: "1px solid #1e1e2e" }}
     >
       {/* Image */}
-      <div className="relative h-[90px] overflow-hidden" style={{ background: `${color}18` }}>
+      <div className="relative h-[80px] overflow-hidden" style={{ background: `${color}18` }}>
         {e.image_url ? (
           <img
             src={e.image_url} alt={e.event_name} loading="lazy"
