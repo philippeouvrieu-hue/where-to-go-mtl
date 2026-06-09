@@ -195,8 +195,8 @@ const Index = () => {
             <span className="text-[10px] uppercase tracking-[0.35em] text-white/35 font-medium">Montréal</span>
           </div>
           <h1 className="font-display font-black tracking-tighter leading-none text-white"
-            style={{ fontSize: "clamp(2.8rem, 10vw, 5rem)" }}>
-            WHERE TO GO
+            style={{ fontSize: "clamp(2.4rem, 9vw, 4.5rem)" }}>
+            What's the Move
           </h1>
         </div>
 

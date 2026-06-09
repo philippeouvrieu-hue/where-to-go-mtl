@@ -1,7 +1,7 @@
 {
-  "name": "Where To Go Mtl",
-  "short_name": "WTG Mtl",
-  "description": "La nightlife de Montréal, sans détour. Techno, house, rap, concerts, raves.",
+  "name": "The Move Montréal",
+  "short_name": "The Move",
+  "description": "What's the Move à Montréal ? Techno, house, rap, concerts, raves.",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",

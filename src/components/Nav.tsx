@@ -14,7 +14,7 @@ export const TopBar = () => {
       >
         <Link to="/" className="flex items-center gap-1.5">
           <div className="w-1.5 h-1.5 rounded-full" style={{ background: "#f0146b" }} />
-          <span className="font-display font-black tracking-tight text-white">WHERE TO GO</span>
+          <span className="font-display font-black tracking-tight text-white">The Move</span>
           <span className="text-[10px] uppercase tracking-[0.3em] text-white/30 ml-1">Montréal</span>
         </Link>
         <nav className="flex items-center gap-1 text-sm">
