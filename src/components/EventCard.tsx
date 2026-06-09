@@ -12,7 +12,7 @@ export const EventCardScroll = ({ e }: { e: EventRow }) => {
       style={{ border: "1px solid #1e1e2e" }}
     >
       {/* Image */}
-      <div className="relative h-[130px] overflow-hidden" style={{ background: `${color}18` }}>
+      <div className="relative h-[90px] overflow-hidden" style={{ background: `${color}18` }}>
         {e.image_url ? (
           <img
             src={e.image_url} alt={e.event_name} loading="lazy"
@@ -71,30 +71,44 @@ export const EventCardRow = ({ e }: { e: EventRow }) => {
   return (
     <Link
       to={`/event/${e.id}`}
-      className="group flex items-center gap-4 px-4 py-3.5 rounded-xl transition-colors duration-150"
-      style={{ background: "#13131f", border: "1px solid #1e1e2e" }}
+      className="group relative flex items-center gap-4 px-4 py-3.5 rounded-xl overflow-hidden transition-all duration-150 hover:-translate-y-0.5"
+      style={{ border: "1px solid #1e1e2e", minHeight: 68 }}
     >
+      {/* Background image */}
+      {e.image_url && (
+        <img
+          src={e.image_url} alt="" aria-hidden loading="lazy"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      )}
+      {/* Dark overlay */}
+      <div className="absolute inset-0" style={{
+        background: e.image_url
+          ? "linear-gradient(90deg, rgba(10,6,24,0.92) 0%, rgba(10,6,24,0.75) 60%, rgba(10,6,24,0.5) 100%)"
+          : "#13131f"
+      }} />
+
       {/* Color dot / genre indicator */}
-      <div className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-[10px] font-bold uppercase"
-        style={{ background: `${color}18`, color, border: `1px solid ${color}30` }}>
+      <div className="relative flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-[10px] font-bold uppercase"
+        style={{ background: `${color}25`, color, border: `1px solid ${color}40` }}>
         {(e.main_style ?? "?").slice(0, 2).toUpperCase()}
       </div>
 
       {/* Main info */}
-      <div className="flex-1 min-w-0">
+      <div className="relative flex-1 min-w-0">
         <div className="font-display font-semibold text-sm text-white leading-tight truncate group-hover:opacity-75 transition-opacity">
           {e.event_name}
         </div>
-        <div className="text-[11px] text-white/45 mt-0.5 flex items-center gap-1.5">
+        <div className="text-[11px] text-white/55 mt-0.5 flex items-center gap-1.5">
           <span className="truncate">{display(e.venue_name)}</span>
           {e.neighborhood && <><span>·</span><span className="truncate">{e.neighborhood}</span></>}
         </div>
       </div>
 
       {/* Date + price */}
-      <div className="flex-shrink-0 text-right space-y-0.5">
-        <div className="text-[11px] text-white/50">{formatDate(e.event_date)}</div>
-        <div className={`text-xs font-bold ${e.is_free ? "text-emerald-400" : "text-white/80"}`}>
+      <div className="relative flex-shrink-0 text-right space-y-0.5">
+        <div className="text-[11px] text-white/60">{formatDate(e.event_date)}</div>
+        <div className={`text-xs font-bold ${e.is_free ? "text-emerald-400" : "text-white"}`}>
           {formatPrice(e)}
         </div>
       </div>
