@@ -165,14 +165,13 @@ const EventDetail = () => {
               <div className="text-muted-foreground">{display(e.address)}</div>
               <div className="text-muted-foreground">{display(e.neighborhood)}, {e.city ?? "Montréal"}</div>
             </div>
-            <a
-              href={mapsUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 text-xs px-3 py-2 rounded-md border border-border hover:border-primary/40 text-muted-foreground hover:text-foreground transition w-full justify-center"
+            <Link
+              to="/map"
+              className="inline-flex items-center gap-2 text-xs px-3 py-2 rounded-md border hover:border-primary/40 text-muted-foreground hover:text-foreground transition w-full justify-center"
+              style={{ borderColor: "rgba(240,20,107,0.3)", color: "#f0146b" }}
             >
-              <Navigation className="h-3.5 w-3.5" />Ouvrir dans Google Maps
-            </a>
+              <Navigation className="h-3.5 w-3.5" />Voir sur la carte
+            </Link>
           </div>
 
           <div className="p-6 rounded-xl bg-gradient-card border border-border space-y-3">
