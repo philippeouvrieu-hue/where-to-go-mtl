@@ -52,8 +52,8 @@ export const SplashScreen = ({ onDone }: SplashScreenProps) => {
       className="fixed inset-0 z-[9998] flex flex-col items-center justify-center overflow-hidden select-none"
       style={{
         background: "linear-gradient(to top, #3a0800 0%, #7a1a00 40%, #E8500A 100%)",
-        opacity: exiting ? 0 : 1,
-        transition: "opacity 0.65s ease",
+        transform: exiting ? "translateY(-100%)" : "translateY(0)",
+        transition: "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
         pointerEvents: exiting ? "none" : "all",
         cursor: "grab",
       }}

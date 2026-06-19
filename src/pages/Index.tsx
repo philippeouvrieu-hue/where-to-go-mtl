@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { EventRow, formatDate, formatPrice, styleColor } from "@/lib/events";
 import { Layout } from "@/components/Layout";
 import { SplashScreen } from "@/components/SplashScreen";
+import { OnboardingScreen } from "@/components/OnboardingScreen";
 import { rankEvents, rankGenreEvents } from "@/lib/algorithm";
 
 // ── Venue photo fallback ──────────────────────────────────────────────────────
@@ -341,6 +342,7 @@ const Index = () => {
   const [showSplash, setShowSplash] = useState(() => {
     return !sessionStorage.getItem("splashShown");
   });
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
     supabase.from("events").select("*").order("event_date", { ascending: true }).then(({ data }) => {
@@ -361,10 +363,17 @@ const Index = () => {
 
   return (
     <>
+      {showOnboarding && (
+        <OnboardingScreen onSkip={() => setShowOnboarding(false)} />
+      )}
+
       {showSplash && (
         <SplashScreen onDone={() => {
           sessionStorage.setItem("splashShown", "1");
           setShowSplash(false);
+          if (!localStorage.getItem("wtm_onboarded")) {
+            setShowOnboarding(true);
+          }
         }} />
       )}
 

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Politique de confidentialité — What's the Move</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Space+Mono:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080808;
+      --orange: #E8500A;
+      --red: #C0392B;
+      --text: #ffffff;
+      --text-muted: rgba(255,255,255,0.55);
+      --text-faint: rgba(255,255,255,0.3);
+      --border: rgba(255,255,255,0.08);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.7;
+      padding: 0 0 80px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Header */
+    .header {
+      padding: 56px 24px 40px;
+      border-bottom: 1px solid var(--border);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .header-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .header-label::before {
+      content: '';
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--orange);
+    }
+    .header h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(2rem, 7vw, 3rem);
+      font-weight: 400;
+      letter-spacing: -0.4px;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+    .header-meta {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--text-faint);
+      letter-spacing: 0.04em;
+    }
+
+    /* Content */
+    .content {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section {
+      padding: 40px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    section:last-child {
+      border-bottom: none;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.35rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 16px;
+      letter-spacing: -0.2px;
+    }
+
+    p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+    p:last-child { margin-bottom: 0; }
+
+    ul {
+      list-style: none;
+      margin: 12px 0;
+    }
+    ul li {
+      font-size: 14px;
+      color: var(--text-muted);
+      padding: 6px 0 6px 20px;
+      position: relative;
+    }
+    ul li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--orange);
+      font-family: 'Space Mono', monospace;
+    }
+
+    .highlight-box {
+      background: rgba(232,80,10,0.08);
+      border: 1px solid rgba(232,80,10,0.2);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .highlight-box p {
+      margin-bottom: 0;
+      color: rgba(255,255,255,0.75);
+    }
+
+    a {
+      color: var(--orange);
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; }
+
+    .tag {
+      display: inline-block;
+      background: rgba(232,80,10,0.15);
+      color: var(--orange);
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-label">What's the Move</div>
+    <h1>Politique de confidentialité</h1>
+    <p class="header-meta">Dernière mise à jour : 19 juin 2026</p>
+  </div>
+
+  <div class="content">
+
+    <section>
+      <h2>1. Qui sommes-nous ?</h2>
+      <p>
+        <strong style="color:#fff">What's the Move</strong> est une application mobile et web qui recense les événements nocturnes à Montréal — soirées, clubs, festivals, concerts — et te permet de découvrir ce qui se passe ce soir.
+      </p>
+      <p>
+        Responsable du traitement des données :<br />
+        Philippe Ouvrieu · <a href="mailto:philippe.ouvrieu@gmail.com">philippe.ouvrieu@gmail.com</a>
+      </p>
+    </section>
+
+    <section>
+      <h2>2. Données que nous collectons</h2>
+
+      <span class="tag">Compte (optionnel)</span>
+      <p>
+        Si tu choisis de créer un compte, nous collectons ton <strong style="color:#fff">adresse e-mail</strong> et un <strong style="color:#fff">mot de passe</strong> (stocké de façon chiffrée, jamais en clair). Ton nom d'affichage, si tu le fournis.
+      </p>
+
+      <span class="tag">Utilisation locale</span>
+      <p>
+        Pour personnaliser tes recommandations, l'app stocke sur <em>ton propre appareil</em> (localStorage) un historique léger de tes préférences musicales (styles consultés). Ces données ne quittent jamais ton téléphone et ne sont pas envoyées à nos serveurs.
+      </p>
+
+      <span class="tag">Favoris</span>
+      <p>
+        Si tu es connecté·e, les events que tu sauvegardes sont stockés dans notre base de données afin de les retrouver sur tous tes appareils.
+      </p>
+
+      <span class="tag">Données techniques automatiques</span>
+      <p>
+        Comme tout service web, nos serveurs peuvent enregistrer des logs standard : adresse IP, type de navigateur, pages visitées, horodatage. Ces données sont utilisées uniquement pour détecter des bugs ou des abus, et ne sont pas utilisées à des fins commerciales.
+      </p>
+
+      <div class="highlight-box">
+        <p>
+          🔒 Nous ne collectons <strong>pas</strong> ta localisation GPS en continu. Nous ne collectons pas de données de santé, de cookies publicitaires, ni aucune donnée vendue à des tiers.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>3. Comment nous utilisons tes données</h2>
+      <ul>
+        <li>Créer et gérer ton compte utilisateur</li>
+        <li>Te proposer des recommandations de soirées adaptées à tes goûts</li>
+        <li>Sauvegarder tes événements favoris</li>
+        <li>Améliorer l'application et corriger les bugs</li>
+        <li>T'envoyer des notifications si tu les as activées (événements du soir, nouveautés)</li>
+      </ul>
+      <p>
+        Nous n'utilisons jamais tes données pour de la publicité ciblée, et nous ne les revendons à personne.
+      </p>
+    </section>
+
+    <section>
+      <h2>4. Stockage et sécurité</h2>
+
+      <span class="tag">Infrastructure</span>
+      <p>
+        Les données de compte et les favoris sont hébergés chez <strong style="color:#fff">Supabase</strong> (PostgreSQL), une infrastructure conforme aux normes SOC 2 Type 2, avec chiffrement des données au repos et en transit (TLS/HTTPS). Les serveurs sont situés aux États-Unis (région us-east).
+      </p>
+
+      <span class="tag">Accès</span>
+      <p>
+        L'accès à la base de données est protégé par Row Level Security (RLS) : chaque utilisateur ne peut lire et modifier que ses propres données. Même nous ne pouvons pas lire tes favoris sans passer par des outils d'administration sécurisés.
+      </p>
+
+      <span class="tag">Mots de passe</span>
+      <p>
+        Les mots de passe sont hachés avec bcrypt par Supabase Auth. Nous n'avons jamais accès à ton mot de passe en clair.
+      </p>
+    </section>
+
+    <section>
+      <h2>5. Durée de conservation</h2>
+      <ul>
+        <li>Données de compte : conservées tant que ton compte est actif</li>
+        <li>Favoris : supprimés avec ton compte</li>
+        <li>Historique local (localStorage) : stocké sur ton appareil, tu peux le supprimer à tout moment dans les paramètres de l'app ou en vidant le cache de ton navigateur</li>
+        <li>Logs techniques : supprimés après 30 jours</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>6. Tes droits (RGPD / Loi 25)</h2>
+      <p>
+        Que tu sois en Europe (RGPD) ou au Québec (Loi 25), tu as le droit de :
+      </p>
+      <ul>
+        <li>Accéder aux données que nous avons sur toi</li>
+        <li>Corriger des informations inexactes</li>
+        <li>Supprimer ton compte et toutes tes données</li>
+        <li>Exporter tes données dans un format lisible</li>
+        <li>Retirer ton consentement à tout moment</li>
+      </ul>
+      <p>
+        Pour exercer ces droits, envoie un e-mail à <a href="mailto:philippe.ouvrieu@gmail.com">philippe.ouvrieu@gmail.com</a>. Nous répondons dans les 30 jours.
+      </p>
+      <p>
+        Tu peux aussi supprimer ton compte directement depuis l'app : <strong style="color:#fff">Compte → Supprimer mon compte</strong>.
+      </p>
+    </section>
+
+    <section>
+      <h2>7. Services tiers</h2>
+      <ul>
+        <li><strong style="color:#fff">Supabase</strong> — base de données et authentification (<a href="https://supabase.com/privacy" target="_blank">politique de confidentialité</a>)</li>
+        <li><strong style="color:#fff">Vercel / Netlify</strong> — hébergement de l'application web (<a href="https://vercel.com/legal/privacy-policy" target="_blank">politique de confidentialité</a>)</li>
+        <li><strong style="color:#fff">Google Fonts</strong> — polices d'écriture (chargées depuis les serveurs Google)</li>
+      </ul>
+      <p>
+        Nous n'utilisons pas Google Analytics, Facebook Pixel, ou tout autre outil de tracking publicitaire.
+      </p>
+    </section>
+
+    <section>
+      <h2>8. Mineurs</h2>
+      <p>
+        What's the Move s'adresse à un public adulte (18 ans et plus). Nous ne collectons pas sciemment de données concernant des personnes mineures. Si tu as moins de 18 ans, n'utilise pas cette application.
+      </p>
+    </section>
+
+    <section>
+      <h2>9. Modifications</h2>
+      <p>
+        Nous pouvons mettre à jour cette politique. En cas de changement important, nous t'en informerons via l'application ou par e-mail. La date de dernière mise à jour figure toujours en haut de cette page.
+      </p>
+    </section>
+
+    <section>
+      <h2>10. Contact</h2>
+      <p>
+        Pour toute question relative à la confidentialité de tes données :
+      </p>
+      <p>
+        📧 <a href="mailto:philippe.ouvrieu@gmail.com">philippe.ouvrieu@gmail.com</a>
+      </p>
+    </section>
+
+  </div>
+
+</body>
+</html>
