@@ -9,11 +9,13 @@ export const OnboardingScreen = ({ onSkip }: OnboardingScreenProps) => {
 
   const handleCreateAccount = () => {
     localStorage.setItem("wtm_onboarded", "1");
+    window.scrollTo({ top: 0, behavior: "instant" });
     navigate("/auth");
   };
 
   const handleSkip = () => {
     localStorage.setItem("wtm_onboarded", "1");
+    window.scrollTo({ top: 0, behavior: "instant" });
     onSkip();
   };
 

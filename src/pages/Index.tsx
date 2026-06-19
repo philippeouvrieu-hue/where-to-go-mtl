@@ -344,6 +344,13 @@ const Index = () => {
   });
   const [showOnboarding, setShowOnboarding] = useState(false);
 
+  // Bloque le scroll du body pendant splash/onboarding
+  useEffect(() => {
+    const locked = showSplash || showOnboarding;
+    document.body.style.overflow = locked ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [showSplash, showOnboarding]);
+
   useEffect(() => {
     supabase.from("events").select("*").order("event_date", { ascending: true }).then(({ data }) => {
       setEvents((data as EventRow[]) ?? []);
@@ -364,13 +371,17 @@ const Index = () => {
   return (
     <>
       {showOnboarding && (
-        <OnboardingScreen onSkip={() => setShowOnboarding(false)} />
+        <OnboardingScreen onSkip={() => {
+          window.scrollTo({ top: 0, behavior: "instant" });
+          setShowOnboarding(false);
+        }} />
       )}
 
       {showSplash && (
         <SplashScreen onDone={() => {
           sessionStorage.setItem("splashShown", "1");
           setShowSplash(false);
+          window.scrollTo({ top: 0, behavior: "instant" });
           if (!localStorage.getItem("wtm_onboarded")) {
             setShowOnboarding(true);
           }
