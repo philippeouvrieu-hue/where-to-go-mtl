@@ -27,14 +27,14 @@ export const SplashScreen = ({ onDone }: SplashScreenProps) => {
     return () => [t1, t2, t3, t4, t5].forEach(clearTimeout);
   }, []);
 
-  // Touch handlers
+  // Touch handlers — swipe UP to enter
   const onTouchStart = (e: React.TouchEvent) => {
     touchStartY.current = e.touches[0].clientY;
   };
   const onTouchEnd = (e: React.TouchEvent) => {
     if (touchStartY.current === null) return;
     const delta = e.changedTouches[0].clientY - touchStartY.current;
-    if (delta > 60) dismiss(); // swipe down ≥ 60px
+    if (delta < -60) dismiss(); // swipe up ≥ 60px
     touchStartY.current = null;
   };
 
@@ -43,7 +43,7 @@ export const SplashScreen = ({ onDone }: SplashScreenProps) => {
   const onMouseDown = (e: React.MouseEvent) => { mouseStartY.current = e.clientY; };
   const onMouseUp = (e: React.MouseEvent) => {
     if (mouseStartY.current === null) return;
-    if (e.clientY - mouseStartY.current > 60) dismiss();
+    if (e.clientY - mouseStartY.current < -60) dismiss();
     mouseStartY.current = null;
   };
 
@@ -51,7 +51,7 @@ export const SplashScreen = ({ onDone }: SplashScreenProps) => {
     <div
       className="fixed inset-0 z-[9998] flex flex-col items-center justify-center overflow-hidden select-none"
       style={{
-        background: "#080808",
+        background: "linear-gradient(to top, #3a0800 0%, #7a1a00 40%, #E8500A 100%)",
         opacity: exiting ? 0 : 1,
         transition: "opacity 0.65s ease",
         pointerEvents: exiting ? "none" : "all",
@@ -67,12 +67,12 @@ export const SplashScreen = ({ onDone }: SplashScreenProps) => {
         position: "absolute",
         bottom: "-8%",
         left: "50%",
-        width: 340,
-        height: 340,
+        width: 420,
+        height: 420,
         borderRadius: "50%",
-        background: "radial-gradient(circle at 38% 38%, #E8500A 0%, #C0392B 40%, #3a0800 72%, transparent 100%)",
-        filter: "blur(64px)",
-        opacity: phase >= 1 ? 0.9 : 0,
+        background: "radial-gradient(circle at 38% 38%, #fff3 0%, #E8500A 30%, #C0392B 60%, #3a0800 100%)",
+        filter: "blur(72px)",
+        opacity: phase >= 1 ? 0.6 : 0,
         transform: phase >= 1 ? "translateX(-50%) translateY(0%)" : "translateX(-50%) translateY(28%)",
         transition: "opacity 1.2s ease, transform 1.8s cubic-bezier(0.16, 1, 0.3, 1)",
         animation: phase >= 1 ? "orb-breathe 4s ease-in-out infinite" : undefined,
@@ -81,11 +81,11 @@ export const SplashScreen = ({ onDone }: SplashScreenProps) => {
 
       {/* Orbe secondaire */}
       <div style={{
-        position: "absolute", bottom: "14%", right: "8%",
-        width: 120, height: 120, borderRadius: "50%",
-        background: "radial-gradient(circle, #D4832A 0%, transparent 70%)",
+        position: "absolute", top: "10%", left: "8%",
+        width: 160, height: 160, borderRadius: "50%",
+        background: "radial-gradient(circle, rgba(255,200,100,0.3) 0%, transparent 70%)",
         filter: "blur(40px)",
-        opacity: phase >= 1 ? 0.45 : 0,
+        opacity: phase >= 1 ? 0.6 : 0,
         transition: "opacity 1.5s ease 0.3s",
         pointerEvents: "none",
       }} />
@@ -99,15 +99,15 @@ export const SplashScreen = ({ onDone }: SplashScreenProps) => {
           opacity: phase >= 2 ? 1 : 0,
           transform: phase >= 2 ? "translateY(0)" : "translateY(14px)",
           transition: "opacity 0.85s ease, transform 0.85s ease",
-          textShadow: "0 0 60px rgba(232,80,10,0.4)",
+          textShadow: "0 2px 40px rgba(0,0,0,0.3)",
         }}>
           What's the Move
         </h1>
 
         <p style={{
           fontFamily: "'Space Mono', monospace",
-          fontSize: 11, color: "#E8DCC8", letterSpacing: "0.06em", marginTop: 18,
-          opacity: phase >= 3 ? 0.7 : 0,
+          fontSize: 11, color: "rgba(255,255,255,0.85)", letterSpacing: "0.06em", marginTop: 18,
+          opacity: phase >= 3 ? 1 : 0,
           transform: phase >= 3 ? "translateY(0)" : "translateY(8px)",
           transition: "opacity 0.7s ease, transform 0.7s ease",
         }}>
@@ -116,15 +116,15 @@ export const SplashScreen = ({ onDone }: SplashScreenProps) => {
 
         <p style={{
           fontFamily: "'Space Mono', monospace",
-          fontSize: 10, color: "#E8500A", fontStyle: "italic", marginTop: 12,
-          opacity: phase >= 4 ? 0.8 : 0,
+          fontSize: 10, color: "rgba(255,255,255,0.6)", fontStyle: "italic", marginTop: 12,
+          opacity: phase >= 4 ? 1 : 0,
           transition: "opacity 0.6s ease 0.1s",
         }}>
           Somewhere in this city, the night just started.
         </p>
       </div>
 
-      {/* Swipe indicator */}
+      {/* Swipe indicator — arrow pointing UP */}
       <div style={{
         position: "absolute", bottom: 44,
         display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
@@ -132,20 +132,20 @@ export const SplashScreen = ({ onDone }: SplashScreenProps) => {
         transition: "opacity 0.6s ease 0.4s",
         pointerEvents: "none",
       }}>
-        <span style={{
-          fontFamily: "'Space Mono', monospace",
-          fontSize: 9, color: "rgba(255,255,255,0.28)",
-          textTransform: "uppercase", letterSpacing: "0.14em",
-        }}>
-          Glisse vers le bas
-        </span>
         <div style={{ animation: phase >= 4 ? "pulse-arrow 1.6s ease-in-out infinite" : undefined }}>
           <svg width="18" height="22" viewBox="0 0 18 22" fill="none">
-            <path d="M9 2L9 18M9 18L3 11M9 18L15 11"
-              stroke="rgba(255,255,255,0.3)" strokeWidth="1.5"
+            <path d="M9 20L9 4M9 4L3 11M9 4L15 11"
+              stroke="rgba(255,255,255,0.7)" strokeWidth="1.5"
               strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
+        <span style={{
+          fontFamily: "'Space Mono', monospace",
+          fontSize: 9, color: "rgba(255,255,255,0.5)",
+          textTransform: "uppercase", letterSpacing: "0.14em",
+        }}>
+          Glisse vers le haut
+        </span>
       </div>
     </div>
   );
