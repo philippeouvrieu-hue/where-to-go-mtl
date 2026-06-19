@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Layout } from "@/components/Layout";
 import { EventRow, display, formatPrice, formatDate, N_I } from "@/lib/events";
+import { trackView } from "@/lib/history";
 import { EventCard } from "@/components/EventCard";
 import { useAuth } from "@/contexts/AuthContext";
 import { Heart, ExternalLink, MapPin, Clock, Calendar, Users, ShieldCheck, ArrowLeft, Share2, Navigation } from "lucide-react";
@@ -54,6 +55,8 @@ const EventDetail = () => {
       const ev = data as EventRow | null;
       setE(ev);
       setLoading(false);
+      // Track la consultation pour l'algo de recommandation (style uniquement)
+      if (ev?.main_style) trackView(ev.main_style);
       if (ev?.main_style) {
         supabase.from("events")
           .select("*")

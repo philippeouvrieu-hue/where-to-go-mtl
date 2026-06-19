@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { EventRow, formatDate, formatPrice, styleColor } from "@/lib/events";
 import { Layout } from "@/components/Layout";
 import { SplashScreen } from "@/components/SplashScreen";
+import { rankEvents, rankGenreEvents } from "@/lib/algorithm";
 
 // ── Venue photo fallback ──────────────────────────────────────────────────────
 const VENUE_PHOTOS: Record<string, string> = {
@@ -255,8 +256,9 @@ const EventSquare = ({ e, color }: { e: EventRow; color: string }) => {
 const GenreRow = ({ genre, events }: { genre: string; events: EventRow[] }) => {
   const [page, setPage] = useState(0);
   const PER_PAGE = 3;
-  const totalPages = Math.ceil(events.length / PER_PAGE);
-  const visible = events.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
+  const ranked = rankGenreEvents(events);
+  const totalPages = Math.ceil(ranked.length / PER_PAGE);
+  const visible = ranked.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
   const color = GENRE_COLORS[genre.toLowerCase()] ?? "#E8500A";
   const prev = () => setPage(p => (p - 1 + totalPages) % totalPages);
   const next = () => setPage(p => (p + 1) % totalPages);
@@ -350,10 +352,12 @@ const Index = () => {
   const today = new Date().toISOString().slice(0, 10);
 
   const active = events.filter(e => e.status !== "terminé" && e.status !== "annulé");
-  const tonight = active.filter(e => e.event_date === today);
-  const popular = [...active].sort((a, b) => (b.popularity_score ?? 0) - (a.popularity_score ?? 0)).slice(0, 12);
-  // Highlights = most popular tonight, or upcoming popular if no tonight events
-  const highlights = tonight.length > 0 ? tonight.slice(0, 5) : popular.slice(0, 5);
+  const tonight = rankEvents(active.filter(e => e.event_date === today));
+  const upcoming = rankEvents(active.filter(e => e.event_date > today));
+  // Highlights : ce soir rankés, sinon upcoming rankés
+  const highlights = (tonight.length > 0 ? tonight : upcoming).slice(0, 6);
+  // Hero carousel : ce soir rankés (diversifiés), sinon upcoming
+  const heroEvents = tonight.length > 0 ? tonight : upcoming.slice(0, 8);
 
   return (
     <>
@@ -418,10 +422,8 @@ const Index = () => {
               </div>
               <SkeletonHero />
             </div>
-          ) : tonight.length > 0 ? (
-            <HeroCarousel events={tonight} />
           ) : (
-            <HeroCarousel events={popular.slice(0, 8)} />
+            <HeroCarousel events={heroEvents} />
           )}
 
           {/* Divider */}
