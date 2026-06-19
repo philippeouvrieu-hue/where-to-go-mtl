@@ -136,67 +136,69 @@ const HeroCarousel = ({ events }: { events: EventRow[] }) => {
         </h2>
       </div>
 
-      {/* Card */}
-      <div className="px-5">
-        <Link to={`/event/${e.id}`}>
-          <div className="relative overflow-hidden rounded-2xl" style={{ height: 250 }}>
-            {photo ? (
-              <img src={photo} alt={e.event_name} className="absolute inset-0 w-full h-full object-cover" style={{ transition: "opacity 0.4s ease" }} />
-            ) : (
-              <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, #3a0800, #C0392B 50%, #E8500A)" }} />
-            )}
-            <div className="absolute inset-0" style={{
-              background: "linear-gradient(to top, rgba(8,8,8,0.97) 0%, rgba(8,8,8,0.45) 55%, rgba(8,8,8,0.08) 100%)"
-            }} />
+      {/* Card with flanking arrows */}
+      <div className="px-3 flex items-center gap-2">
+        <button
+          onClick={prev}
+          style={{ width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.7)", fontSize: 15, flexShrink: 0 }}
+        >←</button>
 
-            {/* Top badges */}
-            <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
-              {e.main_style && (
-                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: "#E8500A", background: "rgba(8,8,8,0.72)", border: "1px solid rgba(232,80,10,0.35)", borderRadius: 20, padding: "3px 10px", letterSpacing: "0.08em", textTransform: "uppercase" }}>
-                  {e.main_style}
-                </span>
+        <div className="flex-1">
+          <Link to={`/event/${e.id}`}>
+            <div className="relative overflow-hidden rounded-2xl" style={{ height: 250 }}>
+              {photo ? (
+                <img src={photo} alt={e.event_name} className="absolute inset-0 w-full h-full object-cover" style={{ transition: "opacity 0.4s ease" }} />
+              ) : (
+                <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, #3a0800, #C0392B 50%, #E8500A)" }} />
               )}
-              {e.is_free && (
-                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, fontWeight: 700, color: "#34d399", background: "rgba(52,211,153,0.12)", border: "1px solid rgba(52,211,153,0.3)", borderRadius: 20, padding: "3px 10px" }}>
-                  Gratuit
-                </span>
-              )}
-            </div>
+              <div className="absolute inset-0" style={{
+                background: "linear-gradient(to top, rgba(8,8,8,0.97) 0%, rgba(8,8,8,0.45) 55%, rgba(8,8,8,0.08) 100%)"
+              }} />
 
-            {/* Bottom content */}
-            <div className="absolute bottom-0 left-0 right-0 p-5">
-              <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 30, fontWeight: 500, color: "#fff", lineHeight: 1.1, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                {e.event_name}
-              </h3>
-              <div className="flex items-center gap-3 mt-3">
-                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: "rgba(255,255,255,0.45)" }}>
-                  {e.start_time ? e.start_time.slice(0, 5) : ""}
-                  {e.venue_name ? ` · ${e.venue_name}` : ""}
-                </span>
-                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, fontWeight: 700, color: "#E8500A" }}>
-                  {formatPrice(e)}
-                </span>
+              {/* Top badges */}
+              <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
+                {e.main_style && (
+                  <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: "#E8500A", background: "rgba(8,8,8,0.72)", border: "1px solid rgba(232,80,10,0.35)", borderRadius: 20, padding: "3px 10px", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                    {e.main_style}
+                  </span>
+                )}
+                {e.is_free && (
+                  <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, fontWeight: 700, color: "#34d399", background: "rgba(52,211,153,0.12)", border: "1px solid rgba(52,211,153,0.3)", borderRadius: 20, padding: "3px 10px" }}>
+                    Gratuit
+                  </span>
+                )}
+              </div>
+
+              {/* Bottom content */}
+              <div className="absolute bottom-0 left-0 right-0 p-5">
+                <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 30, fontWeight: 500, color: "#fff", lineHeight: 1.1, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                  {e.event_name}
+                </h3>
+                <div className="flex items-center gap-3 mt-3">
+                  <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: "rgba(255,255,255,0.45)" }}>
+                    {e.start_time ? e.start_time.slice(0, 5) : ""}
+                    {e.venue_name ? ` · ${e.venue_name}` : ""}
+                  </span>
+                  <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, fontWeight: 700, color: "#E8500A" }}>
+                    {formatPrice(e)}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        </Link>
+          </Link>
 
-        {/* Arrows + dots */}
-        <div className="flex items-center justify-between mt-4 px-1">
-          <button
-            onClick={prev}
-            style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.7)", fontSize: 16, flexShrink: 0 }}
-          >←</button>
-          <div className="flex items-center gap-1.5">
+          {/* Dots */}
+          <div className="flex items-center justify-center gap-1.5 mt-3">
             {events.slice(0, total).map((_, i) => (
               <div key={i} className="rounded-full transition-all duration-300" style={{ width: i === idx ? 20 : 5, height: 3, background: i === idx ? "#E8500A" : "rgba(255,255,255,0.18)" }} />
             ))}
           </div>
-          <button
-            onClick={next}
-            style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.7)", fontSize: 16, flexShrink: 0 }}
-          >→</button>
         </div>
+
+        <button
+          onClick={next}
+          style={{ width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.7)", fontSize: 15, flexShrink: 0 }}
+        >→</button>
       </div>
     </section>
   );
@@ -267,19 +269,20 @@ const GenreRow = ({ genre, events }: { genre: string; events: EventRow[] }) => {
           {genre}
         </span>
       </div>
-      <div className="px-5 grid gap-3" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
-        {visible.map(e => <EventSquare key={e.id} e={e} color={color} />)}
-        {visible.length < 3 && Array(3 - visible.length).fill(null).map((_, i) => (
-          <div key={`ph-${i}`} />
-        ))}
-      </div>
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-4 mt-3">
-          <button onClick={prev} style={{ width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.09)", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.6)", fontSize: 14 }}>←</button>
-          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: "rgba(255,255,255,0.25)" }}>{page + 1}/{totalPages}</span>
-          <button onClick={next} style={{ width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.09)", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.6)", fontSize: 14 }}>→</button>
+      <div className="px-2 flex items-center gap-2">
+        {totalPages > 1 ? (
+          <button onClick={prev} style={{ width: 28, height: 28, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.09)", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.55)", fontSize: 13, flexShrink: 0 }}>←</button>
+        ) : <div style={{ width: 28, flexShrink: 0 }} />}
+        <div className="flex-1 grid gap-2" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
+          {visible.map(e => <EventSquare key={e.id} e={e} color={color} />)}
+          {visible.length < 3 && Array(3 - visible.length).fill(null).map((_, i) => (
+            <div key={`ph-${i}`} />
+          ))}
         </div>
-      )}
+        {totalPages > 1 ? (
+          <button onClick={next} style={{ width: 28, height: 28, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.09)", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.55)", fontSize: 13, flexShrink: 0 }}>→</button>
+        ) : <div style={{ width: 28, flexShrink: 0 }} />}
+      </div>
     </section>
   );
 };
