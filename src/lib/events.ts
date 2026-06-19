@@ -42,16 +42,17 @@ export const N_I = "non indiqué";
 
 export const styleColor = (style: string | null): string => {
   const s = (style ?? "").toLowerCase();
-  if (["techno","industrial","ebm"].some(x => s.includes(x))) return "#f0146b";
-  if (["house","deep house","afro house","tech house"].some(x => s.includes(x))) return "#4da6ff";
-  if (["rap","hip-hop","trap"].some(x => s.includes(x))) return "#a855f7";
-  if (["afrobeat","afro","amapiano","afrobeats"].some(x => s.includes(x))) return "#f97316";
-  if (["reggaeton","latino","dancehall","salsa"].some(x => s.includes(x))) return "#22d3ee";
-  if (["r&b","soul","funk","disco"].some(x => s.includes(x))) return "#f59e0b";
-  if (["jazz","blues","soul"].some(x => s.includes(x))) return "#10b981";
-  if (["rock","metal","punk"].some(x => s.includes(x))) return "#ef4444";
-  if (["afterhours","after"].some(x => s.includes(x))) return "#8b5cf6";
-  return "#6366f1";
+  if (["techno","industrial","ebm"].some(x => s.includes(x)))              return "#C0392B"; // rouge cramoisi
+  if (["house","deep house","tech house","afro house"].some(x => s.includes(x))) return "#E8500A"; // orange brûlé
+  if (["rap","hip-hop","trap"].some(x => s.includes(x)))                   return "#9B4BA8"; // violet
+  if (["afrobeat","afro","amapiano","afrobeats"].some(x => s.includes(x))) return "#D4832A"; // ambre
+  if (["reggaeton","latino","dancehall","salsa"].some(x => s.includes(x))) return "#22d3ee"; // cyan
+  if (["r&b","soul","funk","disco"].some(x => s.includes(x)))              return "#D4AA6A"; // or chaud
+  if (["jazz","blues"].some(x => s.includes(x)))                           return "#10b981"; // émeraude
+  if (["rock","metal","punk"].some(x => s.includes(x)))                    return "#ef4444"; // rouge vif
+  if (["afterhours","after"].some(x => s.includes(x)))                     return "#8b5cf6"; // violet sombre
+  if (["electronic","electro"].some(x => s.includes(x)))                   return "#E8500A"; // orange
+  return "#D4832A"; // ambre par défaut
 };
 export const display = <T,>(v: T | null | undefined | "" | unknown[]): string => {
   if (v === null || v === undefined || v === "") return N_I;

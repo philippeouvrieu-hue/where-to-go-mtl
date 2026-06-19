@@ -2,53 +2,76 @@ import { EventRow, formatDate, formatPrice, display, N_I, styleColor } from "@/l
 import { Link } from "react-router-dom";
 import { MapPin } from "lucide-react";
 
-/* ── Carte horizontale scroll style A (Ce soir) ── */
+// ── Photo de fallback par venue ──────────────────────────────────────────────
+const VENUE_PHOTOS: Record<string, string> = {
+  "Le Mal Nécessaire":            "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80",
+  "Le Red Room":                  "https://images.unsplash.com/photo-1571204829887-3b8d69e4094d?w=800&q=80",
+  "La Porte":                     "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&q=80",
+  "New City Gas":                 "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800&q=80",
+  "Núcleo (Maybe Montreal)":      "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&q=80",
+  "Tiradito Lounge":              "https://images.unsplash.com/photo-1574391884720-bbc3740c59d1?w=800&q=80",
+  "MTELUS":                       "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80",
+  "Newspeak":                     "https://images.unsplash.com/photo-1571204829887-3b8d69e4094d?w=800&q=80",
+  "Le Studio TD":                 "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80",
+  "Le Balcon X Terrasse":         "https://images.unsplash.com/photo-1574391884720-bbc3740c59d1?w=800&q=80",
+  "Le Balcon":                    "https://images.unsplash.com/photo-1574391884720-bbc3740c59d1?w=800&q=80",
+  "Foufounes Electriques":        "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&q=80",
+  "Bar le Ritz PDB":              "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80",
+  "La Sala Rossa":                "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80",
+  "CABARET DU CASINO DE MONTREAL":"https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&q=80",
+  // Nouveaux venues
+  "Soubois":                       "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800&q=80",
+  "MAYBE":                         "https://images.unsplash.com/photo-1574391884720-bbc3740c59d1?w=800&q=80",
+  "Flyjin":                        "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80",
+  "Muzique":                       "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&q=80",
+  "Café Campus":                   "https://images.unsplash.com/photo-1571204829887-3b8d69e4094d?w=800&q=80",
+  // Festivals
+  "Parc Jean-Drapeau (Osheaga)":   "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800&q=80",
+  "Parc Jean-Drapeau":             "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800&q=80",
+  "Festival International de Jazz de Montréal": "https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f?w=800&q=80",
+  "SAT / Quartier des Spectacles (MUTEK)":      "https://images.unsplash.com/photo-1574391884720-bbc3740c59d1?w=800&q=80",
+  "Quartier des Spectacles":       "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800&q=80",
+  "BEACHCLUB":                     "https://images.unsplash.com/photo-1504680177321-2e6a879aac86?w=800&q=80",
+};
+
+const venuePhoto = (e: EventRow): string | null =>
+  e.image_url || VENUE_PHOTOS[e.venue_name ?? ""] || null;
+
+/* ── Carte horizontale scroll (Search / generic use) ── */
 export const EventCardScroll = ({ e }: { e: EventRow }) => {
   const color = styleColor(e.main_style);
-  const initials = (e.main_style ?? "?").slice(0, 2).toUpperCase();
   const price = e.is_free ? "Gratuit" : formatPrice(e);
   const dayLabel = e.event_date
     ? new Date(e.event_date + "T12:00:00").toLocaleDateString("fr-CA", { weekday: "short" })
     : "";
 
-  // Couleurs de dégradé par genre
-  const grad = `linear-gradient(135deg, ${color}, ${color}99)`;
-
   return (
     <Link
       to={`/event/${e.id}`}
-      className="group flex-shrink-0 w-[110px] rounded-xl overflow-hidden transition-transform duration-200 hover:-translate-y-1"
-      style={{ border: "0.5px solid #1e1e2e", background: "#13131f" }}
+      className="group flex-shrink-0 w-[120px] rounded-xl overflow-hidden transition-transform duration-200 hover:-translate-y-1"
+      style={{ border: "1px solid rgba(255,255,255,0.06)", background: "#0f0f0f" }}
     >
-      {/* Bloc image / dégradé */}
-      <div className="relative h-[52px] overflow-hidden flex items-center justify-center"
-        style={{ background: grad }}>
-        {e.image_url && (
-          <img src={e.image_url} alt={e.event_name} loading="lazy"
+      {/* Image */}
+      <div className="relative h-[58px] overflow-hidden"
+        style={{ background: `linear-gradient(135deg, ${color}40, #0f0f0f)` }}>
+        {venuePhoto(e) && (
+          <img src={venuePhoto(e)!} alt={e.event_name} loading="lazy"
             className="absolute inset-0 h-full w-full object-cover" />
         )}
-        {/* Overlay léger pour lisibilité */}
-        <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.25)" }} />
-        {/* Initiales si pas d'image */}
-        {!e.image_url && (
-          <span className="relative font-display font-black text-2xl"
-            style={{ color: "rgba(255,255,255,0.22)", letterSpacing: "-1px" }}>
-            {initials}
-          </span>
-        )}
+        <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.3)" }} />
       </div>
 
       {/* Info */}
-      <div style={{ padding: "7px 9px" }}>
-        <h3 className="font-display font-bold text-white leading-tight line-clamp-2 group-hover:opacity-80 transition-opacity"
-          style={{ fontSize: 11 }}>
+      <div style={{ padding: "8px 10px" }}>
+        <h3 className="text-white leading-tight line-clamp-2 group-hover:opacity-80 transition-opacity"
+          style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 11, fontWeight: 500 }}>
           {e.event_name}
         </h3>
-        <div className="flex items-center justify-between mt-1.5">
-          <span style={{ fontSize: 10, color: "rgba(255,255,255,0.35)" }}>
+        <div className="flex items-center justify-between mt-2">
+          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, color: "rgba(255,255,255,0.32)" }}>
             {dayLabel}{e.start_time ? ` · ${e.start_time.slice(0, 5)}` : ""}
           </span>
-          <span style={{ fontSize: 10, fontWeight: 700, color: e.is_free ? "#34d399" : "rgba(255,255,255,0.65)" }}>
+          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, fontWeight: 700, color: e.is_free ? "#34d399" : "#E8500A" }}>
             {price}
           </span>
         </div>
@@ -57,41 +80,43 @@ export const EventCardScroll = ({ e }: { e: EventRow }) => {
   );
 };
 
-/* ── Ligne liste (Cette semaine / sections) ── */
+/* ── Ligne liste (Search / Saved / Related) ── */
 export const EventCardRow = ({ e }: { e: EventRow }) => {
   const color = styleColor(e.main_style);
   return (
     <Link
       to={`/event/${e.id}`}
       className="group relative flex items-center gap-4 px-4 py-3.5 rounded-xl overflow-hidden transition-all duration-150 hover:-translate-y-0.5"
-      style={{ border: "1px solid #1e1e2e", minHeight: 68 }}
+      style={{ border: "1px solid rgba(255,255,255,0.06)", minHeight: 68, background: "#0f0f0f" }}
     >
       {/* Background image */}
-      {e.image_url && (
+      {venuePhoto(e) && (
         <img
-          src={e.image_url} alt="" aria-hidden loading="lazy"
+          src={venuePhoto(e)!} alt="" aria-hidden loading="lazy"
           className="absolute inset-0 w-full h-full object-cover"
         />
       )}
       {/* Dark overlay */}
       <div className="absolute inset-0" style={{
-        background: e.image_url
-          ? "linear-gradient(90deg, rgba(10,6,24,0.92) 0%, rgba(10,6,24,0.75) 60%, rgba(10,6,24,0.5) 100%)"
-          : "#13131f"
+        background: venuePhoto(e)
+          ? "linear-gradient(90deg, rgba(8,8,8,0.94) 0%, rgba(8,8,8,0.8) 55%, rgba(8,8,8,0.55) 100%)"
+          : "#0f0f0f"
       }} />
 
-      {/* Color dot / genre indicator */}
+      {/* Genre badge */}
       <div className="relative flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-[10px] font-bold uppercase"
-        style={{ background: `${color}25`, color, border: `1px solid ${color}40` }}>
+        style={{ background: `${color}18`, color, border: `1px solid ${color}35`, fontFamily: "'Space Mono', monospace" }}>
         {(e.main_style ?? "?").slice(0, 2).toUpperCase()}
       </div>
 
       {/* Main info */}
       <div className="relative flex-1 min-w-0">
-        <div className="font-display font-semibold text-sm text-white leading-tight truncate group-hover:opacity-75 transition-opacity">
+        <div className="text-sm text-white leading-tight truncate group-hover:opacity-75 transition-opacity"
+          style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 500 }}>
           {e.event_name}
         </div>
-        <div className="text-[11px] text-white/55 mt-0.5 flex items-center gap-1.5">
+        <div className="mt-0.5 flex items-center gap-1.5"
+          style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: "rgba(255,255,255,0.38)" }}>
           <span className="truncate">{display(e.venue_name)}</span>
           {e.neighborhood && <><span>·</span><span className="truncate">{e.neighborhood}</span></>}
         </div>
@@ -99,8 +124,10 @@ export const EventCardRow = ({ e }: { e: EventRow }) => {
 
       {/* Date + price */}
       <div className="relative flex-shrink-0 text-right space-y-0.5">
-        <div className="text-[11px] text-white/60">{formatDate(e.event_date)}</div>
-        <div className={`text-xs font-bold ${e.is_free ? "text-emerald-400" : "text-white"}`}>
+        <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: "rgba(255,255,255,0.4)" }}>
+          {formatDate(e.event_date)}
+        </div>
+        <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, fontWeight: 700, color: e.is_free ? "#34d399" : "#E8500A" }}>
           {formatPrice(e)}
         </div>
       </div>
@@ -123,8 +150,8 @@ export const EventCard = ({ e, variant = "default" }: { e: EventRow; variant?: "
       <div className="h-1 w-full" style={{ background: color }} />
 
       <div className="relative aspect-[16/10] overflow-hidden bg-muted">
-        {e.image_url ? (
-          <img src={e.image_url} alt={e.event_name} loading="lazy"
+        {venuePhoto(e) ? (
+          <img src={venuePhoto(e)!} alt={e.event_name} loading="lazy"
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
         ) : (
           <div className="h-full w-full flex items-center justify-center"
