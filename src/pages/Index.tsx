@@ -93,7 +93,7 @@ const HighlightsSection = ({ events }: { events: EventRow[] }) => {
       <div className="flex items-end justify-between px-5 mb-4">
         <div>
           <p style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: "#E8500A", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 6 }}>
-            ⚡ À la une
+            À la une
           </p>
           <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 24, fontWeight: 400, color: "#fff" }}>
             Highlights du moment
@@ -122,27 +122,23 @@ const HeroCarousel = ({ events }: { events: EventRow[] }) => {
   if (total === 0) return null;
   const e = events[idx];
   const photo = venuePhoto(e);
+  const prev = () => setIdx(i => (i - 1 + total) % total);
   const next = () => setIdx(i => (i + 1) % total);
 
   return (
     <section className="mb-10">
-      <div className="flex items-end justify-between px-5 mb-4">
-        <div>
-          <p style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: "#E8500A", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 6 }}>
-            CE SOIR
-          </p>
-          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 24, fontWeight: 400, color: "#fff" }}>
-            Sortir maintenant
-          </h2>
-        </div>
-        <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: "rgba(255,255,255,0.28)" }}>
-          — {idx + 1}/{total} —
-        </span>
+      <div className="px-5 mb-4">
+        <p style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: "#E8500A", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 6 }}>
+          CE SOIR
+        </p>
+        <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 24, fontWeight: 400, color: "#fff" }}>
+          Sortir maintenant
+        </h2>
       </div>
 
       {/* Card */}
-      <div className="px-5" onClick={next} style={{ cursor: "pointer" }}>
-        <Link to={`/event/${e.id}`} onClick={ev => ev.preventDefault()}>
+      <div className="px-5">
+        <Link to={`/event/${e.id}`}>
           <div className="relative overflow-hidden rounded-2xl" style={{ height: 250 }}>
             {photo ? (
               <img src={photo} alt={e.event_name} className="absolute inset-0 w-full h-full object-cover" style={{ transition: "opacity 0.4s ease" }} />
@@ -185,19 +181,21 @@ const HeroCarousel = ({ events }: { events: EventRow[] }) => {
           </div>
         </Link>
 
-        {/* Pagination bar */}
-        <div className="flex items-center justify-center gap-1.5 mt-3">
-          {events.slice(0, total).map((_, i) => (
-            <div
-              key={i}
-              className="rounded-full transition-all duration-300"
-              style={{
-                width: i === idx ? 24 : 5,
-                height: 3,
-                background: i === idx ? "#E8500A" : "rgba(255,255,255,0.18)",
-              }}
-            />
-          ))}
+        {/* Arrows + dots */}
+        <div className="flex items-center justify-between mt-4 px-1">
+          <button
+            onClick={prev}
+            style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.7)", fontSize: 16, flexShrink: 0 }}
+          >←</button>
+          <div className="flex items-center gap-1.5">
+            {events.slice(0, total).map((_, i) => (
+              <div key={i} className="rounded-full transition-all duration-300" style={{ width: i === idx ? 20 : 5, height: 3, background: i === idx ? "#E8500A" : "rgba(255,255,255,0.18)" }} />
+            ))}
+          </div>
+          <button
+            onClick={next}
+            style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.7)", fontSize: 16, flexShrink: 0 }}
+          >→</button>
         </div>
       </div>
     </section>
@@ -258,24 +256,16 @@ const GenreRow = ({ genre, events }: { genre: string; events: EventRow[] }) => {
   const totalPages = Math.ceil(events.length / PER_PAGE);
   const visible = events.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
   const color = GENRE_COLORS[genre.toLowerCase()] ?? "#E8500A";
+  const prev = () => setPage(p => (p - 1 + totalPages) % totalPages);
+  const next = () => setPage(p => (p + 1) % totalPages);
 
   return (
     <section className="mb-9">
-      <div className="flex items-center justify-between px-5 mb-3">
-        <div className="flex items-center gap-3">
-          <div className="rounded-full" style={{ width: 3, height: 18, background: color }} />
-          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, fontWeight: 700, color: "#fff", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-            {genre}
-          </span>
-        </div>
-        {totalPages > 1 && (
-          <button
-            onClick={() => setPage(p => (p + 1) % totalPages)}
-            style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: "rgba(255,255,255,0.32)", display: "flex", alignItems: "center", gap: 4 }}
-          >
-            {page + 1}/{totalPages} →
-          </button>
-        )}
+      <div className="flex items-center px-5 mb-3">
+        <div className="rounded-full mr-3" style={{ width: 3, height: 18, background: color }} />
+        <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, fontWeight: 700, color: "#fff", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+          {genre}
+        </span>
       </div>
       <div className="px-5 grid gap-3" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
         {visible.map(e => <EventSquare key={e.id} e={e} color={color} />)}
@@ -283,6 +273,13 @@ const GenreRow = ({ genre, events }: { genre: string; events: EventRow[] }) => {
           <div key={`ph-${i}`} />
         ))}
       </div>
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-4 mt-3">
+          <button onClick={prev} style={{ width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.09)", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.6)", fontSize: 14 }}>←</button>
+          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: "rgba(255,255,255,0.25)" }}>{page + 1}/{totalPages}</span>
+          <button onClick={next} style={{ width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.09)", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.6)", fontSize: 14 }}>→</button>
+        </div>
+      )}
     </section>
   );
 };
