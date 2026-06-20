@@ -144,9 +144,9 @@ const Account = () => {
         {/* À propos */}
         <SectionLabel label="À propos" />
         <div className="mx-5 rounded-2xl overflow-hidden" style={{ border: `1px solid ${BORDER}` }}>
-          <Row icon={<Shield style={{ width: 16, height: 16 }} />} label="Politique de confidentialité" onClick={() => window.open("/privacy-policy.html", "_blank")} />
+          <Row icon={<Shield style={{ width: 16, height: 16 }} />} label="Politique de confidentialité" to="/privacy" />
           <Divider />
-          <Row icon={<FileText style={{ width: 16, height: 16 }} />} label="Conditions d'utilisation" onClick={() => window.open("/terms.html", "_blank")} />
+          <Row icon={<FileText style={{ width: 16, height: 16 }} />} label="Conditions d'utilisation" to="/terms" />
           <Divider />
           <Row icon={<Info style={{ width: 16, height: 16 }} />} label="Version de l'app" value={APP_VERSION} onClick={() => {}} />
         </div>
