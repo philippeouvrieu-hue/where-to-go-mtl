@@ -15,6 +15,7 @@ import MapPage from "./pages/Map";
 import NotFound from "./pages/NotFound";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import VenueDetail from "./pages/VenueDetail";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/map" element={<MapPage />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/venue/:id" element={<VenueDetail />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

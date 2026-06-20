@@ -6,6 +6,31 @@ import { Layout } from "@/components/Layout";
 import { SplashScreen } from "@/components/SplashScreen";
 import { OnboardingScreen } from "@/components/OnboardingScreen";
 import { rankEvents, rankGenreEvents } from "@/lib/algorithm";
+import { MapPin } from "lucide-react";
+
+// ── Venue type ────────────────────────────────────────────────────────────────
+interface VenueRow {
+  id: string;
+  name: string;
+  type?: string;
+  neighborhood?: string;
+  music_styles?: string[];
+  photo_main?: string;
+  vibe?: string;
+  rating?: number;
+}
+
+// Venue genre → palette
+const venuePalette = (styles: string[]) => {
+  const s = (styles ?? []).join(" ").toLowerCase();
+  if (s.includes("techno"))  return ["#C0392B", "#7a0000"];
+  if (s.includes("house"))   return ["#E8500A", "#C0392B"];
+  if (s.includes("afro"))    return ["#D4832A", "#E8500A"];
+  if (s.includes("hip") || s.includes("rap")) return ["#9B4BA8", "#6d28d9"];
+  if (s.includes("jazz"))    return ["#10b981", "#059669"];
+  if (s.includes("latin"))   return ["#22d3ee", "#E8500A"];
+  return ["#E8500A", "#C0392B"];
+};
 
 // ── Venue photo fallback ──────────────────────────────────────────────────────
 const VENUE_PHOTOS: Record<string, string> = {
@@ -147,14 +172,27 @@ const HeroCarousel = ({ events }: { events: EventRow[] }) => {
 
         <div className="flex-1">
           <Link to={`/event/${e.id}`}>
-            <div className="relative overflow-hidden rounded-2xl" style={{ height: 250 }}>
-              {photo ? (
-                <img src={photo} alt={e.event_name} className="absolute inset-0 w-full h-full object-cover" style={{ transition: "opacity 0.4s ease" }} />
-              ) : (
-                <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, #3a0800, #C0392B 50%, #E8500A)" }} />
+            <div className="relative overflow-hidden rounded-2xl" style={{ height: 260 }}>
+              {/* Gradient aura — Pinterest style */}
+              {(() => {
+                const [c1, c2] = (() => {
+                  const s = (e.main_style ?? "").toLowerCase();
+                  if (s.includes("techno")) return ["#C0392B", "#7a0000"];
+                  if (s.includes("house"))  return ["#E8500A", "#C0392B"];
+                  if (s.includes("afro"))   return ["#D4832A", "#E8500A"];
+                  if (s.includes("hip"))    return ["#9B4BA8", "#6d28d9"];
+                  if (s.includes("r&b"))    return ["#C0392B", "#D4AA6A"];
+                  return ["#E8500A", "#C0392B"];
+                })();
+                return (
+                  <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at -10% 60%, ${c1}65 0%, transparent 55%), radial-gradient(ellipse at 110% 25%, ${c2}40 0%, transparent 50%), #0c0c0c` }} />
+                );
+              })()}
+              {photo && (
+                <img src={photo} alt={e.event_name} className="absolute inset-0 w-full h-full object-cover" style={{ opacity: 0.5, transition: "opacity 0.4s ease" }} />
               )}
               <div className="absolute inset-0" style={{
-                background: "linear-gradient(to top, rgba(8,8,8,0.97) 0%, rgba(8,8,8,0.45) 55%, rgba(8,8,8,0.08) 100%)"
+                background: "linear-gradient(to top, rgba(8,8,8,0.98) 0%, rgba(8,8,8,0.3) 55%, rgba(8,8,8,0.1) 100%)"
               }} />
 
               {/* Top badges */}
@@ -320,6 +358,78 @@ const GenreSection = ({ events }: { events: EventRow[] }) => {
   );
 };
 
+// ── Venue card — style AKILA poster ─────────────────────────────────────────
+const VenueCard = ({ v }: { v: VenueRow }) => {
+  const [pal1, pal2] = venuePalette(v.music_styles ?? []);
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <Link
+      to={`/venue/${v.id}`}
+      className="flex-shrink-0 relative overflow-hidden rounded-2xl"
+      style={{ width: 150, height: 200, display: "block", textDecoration: "none" }}
+    >
+      {/* Gradient background */}
+      <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 20% 60%, ${pal1}55 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, ${pal2}35 0%, transparent 55%), #0c0c0c` }} />
+
+      {/* Photo */}
+      {v.photo_main && (
+        <img
+          src={v.photo_main}
+          alt={v.name}
+          loading="lazy"
+          onLoad={() => setLoaded(true)}
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: loaded ? 0.55 : 0, transition: "opacity 0.5s ease" }}
+        />
+      )}
+
+      {/* Dark overlay */}
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(8,8,8,0.97) 0%, rgba(8,8,8,0.4) 55%, rgba(8,8,8,0.2) 100%)" }} />
+
+      {/* Content */}
+      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0 14px 16px" }}>
+        {v.type && (
+          <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: pal1, textTransform: "uppercase", letterSpacing: "0.2em", marginBottom: 6 }}>
+            {v.type}
+          </div>
+        )}
+        <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 16, fontWeight: 400, color: "#fff", lineHeight: 1.15, marginBottom: 8 }}>
+          {v.name}
+        </h3>
+        {v.neighborhood && (
+          <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
+            <MapPin style={{ width: 9, height: 9, color: "rgba(255,255,255,0.35)" }} />
+            <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, color: "rgba(255,255,255,0.35)" }}>
+              {v.neighborhood}
+            </span>
+          </div>
+        )}
+      </div>
+    </Link>
+  );
+};
+
+const VenuesSection = ({ venues }: { venues: VenueRow[] }) => {
+  if (venues.length === 0) return null;
+  return (
+    <section className="mb-10">
+      <div className="flex items-end justify-between px-5 mb-4">
+        <div>
+          <p style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: "#E8500A", textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 6 }}>
+            Lieux
+          </p>
+          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 24, fontWeight: 400, color: "#fff" }}>
+            Nos venues
+          </h2>
+        </div>
+      </div>
+      <div className="pl-5 flex gap-4 overflow-x-auto scrollbar-hide pb-2">
+        {venues.map(v => <VenueCard key={v.id} v={v} />)}
+        <div className="flex-shrink-0 w-4" />
+      </div>
+    </section>
+  );
+};
+
 // ── Skeleton ──────────────────────────────────────────────────────────────────
 const SkeletonCards = () => (
   <div className="pl-5 flex gap-4 overflow-hidden">
@@ -338,6 +448,7 @@ const SkeletonHero = () => (
 // ── Main ──────────────────────────────────────────────────────────────────────
 const Index = () => {
   const [events, setEvents] = useState<EventRow[]>([]);
+  const [venues, setVenues] = useState<VenueRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [showSplash, setShowSplash] = useState(() => {
     return !sessionStorage.getItem("splashShown");
@@ -352,8 +463,12 @@ const Index = () => {
   }, [showSplash, showOnboarding]);
 
   useEffect(() => {
-    supabase.from("events").select("*").order("event_date", { ascending: true }).then(({ data }) => {
-      setEvents((data as EventRow[]) ?? []);
+    Promise.all([
+      supabase.from("events").select("*").order("event_date", { ascending: true }),
+      supabase.from("venues").select("id,name,type,neighborhood,music_styles,photo_main,vibe,rating").order("rating", { ascending: false }).limit(20),
+    ]).then(([{ data: ev }, { data: ve }]) => {
+      setEvents((ev as EventRow[]) ?? []);
+      setVenues((ve as VenueRow[]) ?? []);
       setLoading(false);
     });
   }, []);
@@ -432,6 +547,14 @@ const Index = () => {
 
           {/* Divider */}
           <div className="px-5 mb-10"><div style={{ height: 1, background: "rgba(255,255,255,0.05)" }} /></div>
+
+          {/* ── Venues ── */}
+          {!loading && venues.length > 0 && (
+            <>
+              <VenuesSection venues={venues} />
+              <div className="px-5 mb-10"><div style={{ height: 1, background: "rgba(255,255,255,0.05)" }} /></div>
+            </>
+          )}
 
           {/* ── Ce soir hero carousel ── */}
           {loading ? (
