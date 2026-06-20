@@ -1,0 +1,32 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="72%" r="52%">
+      <stop offset="0%" stop-color="#E8500A" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#080808" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1024" height="1024" fill="#080808"/>
+
+  <!-- Orange glow -->
+  <rect width="1024" height="1024" fill="url(#glow)"/>
+
+  <!-- W — Playfair-style serif constructed from paths -->
+  <text
+    x="512"
+    y="650"
+    text-anchor="middle"
+    font-family="'Playfair Display', 'Georgia', 'Times New Roman', serif"
+    font-size="580"
+    font-weight="400"
+    fill="#ffffff"
+    letter-spacing="-8"
+  >W</text>
+
+  <!-- Orange underline -->
+  <rect x="312" y="718" width="400" height="14" rx="7" fill="#E8500A"/>
+
+  <!-- Orange dot -->
+  <circle cx="512" cy="780" r="22" fill="#E8500A"/>
+</svg>
